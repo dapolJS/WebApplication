@@ -5,11 +5,15 @@ namespace FirstWebApi.Controllers
 {
     public class NoteController : ControllerBase
     {
-        //TODO: i think i need to create some special token which will have notes assigned, like (room)
-        // and once people join that room or link with token they will see the notes that others created
-        // in that room
+        /* TODO: i think i need to create some special token which will have notes assigned, like (room)
+        * and once people join that room or link with token they will see the notes that others created
+        * in that room, so like shared notebook
+        */
 
         // Another thing to add is AUTH
+
+        // Testing commits
+
         private readonly DataContext _dataContext;
         public NoteController(DataContext dataContext)
         {
@@ -50,7 +54,7 @@ namespace FirstWebApi.Controllers
             if (existingNote != null)
             {
                 if (note.Title != null || note.Title != "" )
-                {//TODO issue here with logic, need to handle null values if you use blank spaces 
+                {// TODO issue here with logic, need to handle null values if you use blank spaces 
                     existingNote.Title = note.Title;
                 }
                 else 
@@ -58,7 +62,7 @@ namespace FirstWebApi.Controllers
                     return BadRequest("Please enter valid value in Title!");
                 }
                 if (note.Description != "" || note.Description != null)
-                {//TODO issue here with logic, need to handle null values if you use blank spaces
+                {// TODO issue here with logic, need to handle null values if you use blank spaces
                     existingNote.Description = note.Description;
                 }
                 else
