@@ -8,11 +8,12 @@ namespace FirstWebApi.Controllers
         /* TODO: i think i need to create some special token which will have notes assigned, like (room)
         * and once people join that room or link with token they will see the notes that others created
         * in that room, so like shared notebook
+        * 2. If notebook exists do not allow to create new one
+        * 3. Each note should be easily assigned to notebook without new notebook being created
+        * 4. Each note should be easy to edit if not entering any values or leaving empty strings
+        * 5. Throw bad requests instead of new errors
+        * 6. Add AUTH based on token with expiration time ?
         */
-
-        // Another thing to add is AUTH
-
-        // Testing commits
 
         private readonly DataContext _dataContext;
         public NoteController(DataContext dataContext)
@@ -27,7 +28,41 @@ namespace FirstWebApi.Controllers
 
         }
 
-        [HttpPost("/api/AddNote")]
+        [HttpGet("/api/GetNotebooks")]
+        public ActionResult<IEnumerable<Notebook>> GetNotebooks()
+        {
+            return _dataContext.Notebooks.ToList();
+        }
+
+        [HttpPost("/api/CreateNotebook")]
+        public ActionResult CreateNotebook(Notebook notebook)
+        {
+            Notebook existingNotebook = _dataContext.Notebooks.FirstOrDefault(n => n.Id == notebook.Id);
+            Notebook existingNotebookTitle = _dataContext.Notebooks.FirstOrDefault(n => n.NotebookTitle == notebook.NotebookTitle);
+            if (existingNotebook == null)
+            {
+                if (notebook.NotebookTitle == null)
+                {
+                    throw new Exception("Failed to create Notebook. Please enter Title!");
+                }
+                if(existingNotebookTitle != null) 
+                {
+                    throw new Exception("Failed to create Notebook. Title already exists!");
+                }
+                else 
+                {
+                    _dataContext.Notebooks.Add(notebook);
+                    _dataContext.SaveChanges();
+                }
+            }
+            else
+            {
+                throw new Exception("Failed to create Notebook. Notebook with same Id exists!");
+            }
+            return Ok("Succesfully created note with Id: " + notebook.Id + " and Title: " + notebook.NotebookTitle);
+        }
+
+        [HttpPost("/api/CreateNote")] 
         public ActionResult PostNotes(Note note)
         {
             Note existingNote = _dataContext.Notes.FirstOrDefault(n => n.Id == note.Id);
@@ -47,22 +82,27 @@ namespace FirstWebApi.Controllers
         [HttpPut("/api/EditNote")]
         public ActionResult PutNotes(Note note)
         {
-            Console.WriteLine(note.Title);
-            Console.WriteLine(note.Description);
+
 
             Note existingNote = _dataContext.Notes.FirstOrDefault(n => n.Id == note.Id);
+            Console.WriteLine("existing note: ");
+            Console.WriteLine(existingNote.Title);
+            Console.WriteLine(existingNote.Description);
             if (existingNote != null)
             {
-                if (note.Title != null || note.Title != "" )
-                {// TODO issue here with logic, need to handle null values if you use blank spaces 
+                Console.WriteLine("current note: : ");
+                Console.WriteLine(note.Title);
+                Console.WriteLine(note.Description);
+                if (note.Title != null)
+                {
                     existingNote.Title = note.Title;
                 }
                 else 
                 {
                     return BadRequest("Please enter valid value in Title!");
                 }
-                if (note.Description != "" || note.Description != null)
-                {// TODO issue here with logic, need to handle null values if you use blank spaces
+                if (note.Description != null)
+                {
                     existingNote.Description = note.Description;
                 }
                 else
