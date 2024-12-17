@@ -10,9 +10,10 @@ namespace FirstWebApi.Controllers
         * in that room, so like shared notebook
         * 2. If notebook exists do not allow to create new one
         * 3. Each note should be easily assigned to notebook without new notebook being created
-        * 4. Each note should be easy to edit if not entering any values or leaving empty strings
-        * 5. Throw bad requests instead of new errors
+        * 4. DONE === Each note should be easy to edit if not entering any values or leaving empty strings
+        * 5. DONE === Throw bad requests instead of new errors
         * 6. Add AUTH based on token with expiration time ?
+        * 7. Fix note.Done issue that is note.Done not provided it autofills as false even if value existed
         */
 
         private readonly DataContext _dataContext;
@@ -43,11 +44,11 @@ namespace FirstWebApi.Controllers
             {
                 if (notebook.NotebookTitle == null)
                 {
-                    throw new Exception("Failed to create Notebook. Please enter Title!");
+                    return BadRequest("Failed to create Notebook. Please enter Title!");
                 }
                 if(existingNotebookTitle != null) 
                 {
-                    throw new Exception("Failed to create Notebook. Title already exists!");
+                    return BadRequest("Failed to create Notebook. Title already exists!");
                 }
                 else 
                 {
@@ -57,7 +58,7 @@ namespace FirstWebApi.Controllers
             }
             else
             {
-                throw new Exception("Failed to create Notebook. Notebook with same Id exists!");
+                return BadRequest("Failed to create Notebook. Notebook with same Id exists!");
             }
             return Ok("Succesfully created note with Id: " + notebook.Id + " and Title: " + notebook.NotebookTitle);
         }
@@ -74,7 +75,7 @@ namespace FirstWebApi.Controllers
             }
             else
             {
-                throw new Exception("Failed to create Note perhaps note with same ID exists ?");
+                return BadRequest("Failed to create Note perhaps note with same ID exists ?");
             }
             return Ok("Succesfully created note with Id: " + note.Id + " and Title: " + note.Title);
         }
@@ -92,23 +93,31 @@ namespace FirstWebApi.Controllers
             {
                 Console.WriteLine("current note: : ");
                 Console.WriteLine(note.Title);
-                Console.WriteLine(note.Description);
-                if (note.Title != null)
+                //Console.WriteLine(note.Description, existingNote.Title.Length > 0, existingNote.Title);
+                if (note.Title != null && note.Title.Length > 0)
                 {
                     existingNote.Title = note.Title;
                 }
-                else 
+                else if(note.Title.Length == 0 )
+                {
+                    Console.WriteLine("Continue to description");
+                }
+                else
                 {
                     return BadRequest("Please enter valid value in Title!");
                 }
-                if (note.Description != null)
+                if (note.Description != null && note.Description.Length > 0)
                 {
                     existingNote.Description = note.Description;
+                } else if (note.Description.Length == 0)
+                {
+                    Console.WriteLine("Continue to Done");
                 }
                 else
                 {
                     return BadRequest("Please enter valid value in Description!");
                 }
+                Console.WriteLine(note.Done);
                 if (note.Done != existingNote.Done)
                 {
                     existingNote.Done = note.Done;
@@ -118,7 +127,7 @@ namespace FirstWebApi.Controllers
             }
             else
             {
-                throw new Exception("Note with this Id not found");
+                return BadRequest("Note with this Id not found");
             }
         }
         [HttpDelete("/api/DeleteNote")]
@@ -133,7 +142,7 @@ namespace FirstWebApi.Controllers
             }
             else
             {
-                throw new Exception("Could not find Note to Delete!");
+                return BadRequest("Could not find Note to Delete!");
             }
         }
     }
