@@ -1,14 +1,16 @@
-﻿namespace FirstWebApi.Models
+﻿using System.Text.Json.Serialization;
+
+namespace FirstWebApi.Models
 {
     public class Note
     {
         public int Id { get; set; }
-        /* when adding notebook.title while creating new note also what happens is 
-         * new notebook is being created ??
-        */
-        public Notebook? Notebook { get; set; }
+        public int NotebookId { get; set; }
         public string Title { get; set; } = "";
         public string Description { get; set; } = "";
-        public bool Done { get; set; }
+        public bool? Done { get; set; }
+        [JsonIgnore]
+        public Notebook Notebook { get; set; } // Navigation property
+
     }
 }

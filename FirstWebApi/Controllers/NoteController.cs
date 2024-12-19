@@ -1,19 +1,21 @@
 ﻿using FirstWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirstWebApi.Controllers
 {
     public class NoteController : ControllerBase
     {
-        /* TODO: i think i need to create some special token which will have notes assigned, like (room)
-        * and once people join that room or link with token they will see the notes that others created
-        * in that room, so like shared notebook
-        * 2. If notebook exists do not allow to create new one
-        * 3. Each note should be easily assigned to notebook without new notebook being created
+        /* TODO: 
+        * 1. ONGOING >>> I need to create some special token(room) which will have notebooks sharable
+        * 2. DONE === If notebook exists do not allow to create new one
+        * 3. DONE === Each note should be easily assigned to notebook without new notebook being created
         * 4. DONE === Each note should be easy to edit if not entering any values or leaving empty strings
         * 5. DONE === Throw bad requests instead of new errors
         * 6. Add AUTH based on token with expiration time ?
-        * 7. Fix note.Done issue that is note.Done not provided it autofills as false even if value existed
+        * 7. DONE === Fix note.Done issue that is note.Done not provided it autofills as false even if value existed
+        * 8. Try to init DTO's for notebook perhaps ? and others if possible
+        * 9. Separate Notebook controllers and Room controllers from Notes controlles
         */
 
         private readonly DataContext _dataContext;
@@ -32,25 +34,25 @@ namespace FirstWebApi.Controllers
         [HttpGet("/api/GetNotebooks")]
         public ActionResult<IEnumerable<Notebook>> GetNotebooks()
         {
-            return _dataContext.Notebooks.ToList();
+            return _dataContext.Notebooks.Include(x => x.Notes).ToList();
         }
 
         [HttpPost("/api/CreateNotebook")]
         public ActionResult CreateNotebook(Notebook notebook)
         {
             Notebook existingNotebook = _dataContext.Notebooks.FirstOrDefault(n => n.Id == notebook.Id);
-            Notebook existingNotebookTitle = _dataContext.Notebooks.FirstOrDefault(n => n.NotebookTitle == notebook.NotebookTitle);
+            Notebook existingNotebookTitle = _dataContext.Notebooks.FirstOrDefault(n => n.Title == notebook.Title);
             if (existingNotebook == null)
             {
-                if (notebook.NotebookTitle == null)
+                if (notebook.Title == null)
                 {
                     return BadRequest("Failed to create Notebook. Please enter Title!");
                 }
-                if(existingNotebookTitle != null) 
+                if (existingNotebookTitle != null)
                 {
                     return BadRequest("Failed to create Notebook. Title already exists!");
                 }
-                else 
+                else
                 {
                     _dataContext.Notebooks.Add(notebook);
                     _dataContext.SaveChanges();
@@ -60,16 +62,28 @@ namespace FirstWebApi.Controllers
             {
                 return BadRequest("Failed to create Notebook. Notebook with same Id exists!");
             }
-            return Ok("Succesfully created note with Id: " + notebook.Id + " and Title: " + notebook.NotebookTitle);
+            return Ok("Succesfully created note with Id: " + notebook.Id + " and Title: " + notebook.Title);
         }
 
-        [HttpPost("/api/CreateNote")] 
+        [HttpPost("api/CreateRoom")]
+        public ActionResult CreateRoom()
+        {
+            Room room = new Room();
+            return Ok(room.UniqueKey);
+        }
+
+        [HttpPost("/api/CreateNote")]
         public ActionResult PostNotes(Note note)
         {
             Note existingNote = _dataContext.Notes.FirstOrDefault(n => n.Id == note.Id);
+            var notebook = _dataContext.Notebooks.FindAsync(note.Notebook);
 
             if (existingNote == null)
             {
+                if (notebook == null)
+                {
+                    return BadRequest("Notebook not found");
+                }
                 _dataContext.Notes.Add(note);
                 _dataContext.SaveChanges();
             }
@@ -86,44 +100,46 @@ namespace FirstWebApi.Controllers
 
 
             Note existingNote = _dataContext.Notes.FirstOrDefault(n => n.Id == note.Id);
-            Console.WriteLine("existing note: ");
-            Console.WriteLine(existingNote.Title);
-            Console.WriteLine(existingNote.Description);
+
             if (existingNote != null)
             {
-                Console.WriteLine("current note: : ");
-                Console.WriteLine(note.Title);
-                //Console.WriteLine(note.Description, existingNote.Title.Length > 0, existingNote.Title);
-                if (note.Title != null && note.Title.Length > 0)
+                if (!string.IsNullOrWhiteSpace(note.Title))
                 {
                     existingNote.Title = note.Title;
                 }
-                else if(note.Title.Length == 0 )
-                {
-                    Console.WriteLine("Continue to description");
+                else if(string.IsNullOrEmpty(note.Title)) {
+                    Console.WriteLine("Ignored empty title");
                 }
                 else
                 {
                     return BadRequest("Please enter valid value in Title!");
                 }
-                if (note.Description != null && note.Description.Length > 0)
+                if (!string.IsNullOrWhiteSpace(note.Description))
                 {
                     existingNote.Description = note.Description;
-                } else if (note.Description.Length == 0)
-                {
-                    Console.WriteLine("Continue to Done");
+                }
+                else if(string.IsNullOrEmpty(note.Description)) {
+                    Console.WriteLine("Ignored empty description");
                 }
                 else
                 {
                     return BadRequest("Please enter valid value in Description!");
                 }
-                Console.WriteLine(note.Done);
-                if (note.Done != existingNote.Done)
+                Console.WriteLine("Done status : " + note.Done);
+                if (note.Done != null)
                 {
                     existingNote.Done = note.Done;
                 }
-                _dataContext.SaveChanges();
-                return Ok("Successfully edited note with Id " + note.Id);
+                if (_dataContext.SaveChanges() > 0)
+                {
+                    return Ok("Successfully edited note with Id " + note.Id);
+
+                }
+                else
+                {
+                    return Ok("There were no changes!");
+                }
+               
             }
             else
             {
