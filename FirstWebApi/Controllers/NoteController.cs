@@ -1,4 +1,6 @@
-﻿using FirstWebApi.Models;
+﻿using FirstWebApi.DTOs;
+using FirstWebApi.Models;
+using FirstWebApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,9 +21,11 @@ namespace FirstWebApi.Controllers
         */
 
         private readonly DataContext _dataContext;
-        public NoteController(DataContext dataContext)
+        private readonly NotesService _notesService;
+        public NoteController(DataContext dataContext, NotesService notesService)
         {
             _dataContext = dataContext;
+            _notesService = notesService;
         }
 
         [HttpGet("/api/GetNotes")]
@@ -54,7 +58,10 @@ namespace FirstWebApi.Controllers
                 }
                 else
                 {
-                    _dataContext.Notebooks.Add(notebook);
+                    _dataContext.Entry(notebook).Reference(x => x.Title);
+                    _dataContext.Entry(notebook).Reference(x => x.Title);
+
+                    //_dataContext.Notebooks.Add(notebook); // old
                     _dataContext.SaveChanges();
                 }
             }
@@ -95,57 +102,19 @@ namespace FirstWebApi.Controllers
         }
 
         [HttpPut("/api/EditNote")]
-        public ActionResult PutNotes(Note note)
+        public async Task<IActionResult> PutNotes(int Id, NoteDTO noteDTO)
         {
-
-
-            Note existingNote = _dataContext.Notes.FirstOrDefault(n => n.Id == note.Id);
-
-            if (existingNote != null)
+            try
             {
-                if (!string.IsNullOrWhiteSpace(note.Title))
-                {
-                    existingNote.Title = note.Title;
-                }
-                else if(string.IsNullOrEmpty(note.Title)) {
-                    Console.WriteLine("Ignored empty title");
-                }
-                else
-                {
-                    return BadRequest("Please enter valid value in Title!");
-                }
-                if (!string.IsNullOrWhiteSpace(note.Description))
-                {
-                    existingNote.Description = note.Description;
-                }
-                else if(string.IsNullOrEmpty(note.Description)) {
-                    Console.WriteLine("Ignored empty description");
-                }
-                else
-                {
-                    return BadRequest("Please enter valid value in Description!");
-                }
-                Console.WriteLine("Done status : " + note.Done);
-                if (note.Done != null)
-                {
-                    existingNote.Done = note.Done;
-                }
-                if (_dataContext.SaveChanges() > 0)
-                {
-                    return Ok("Successfully edited note with Id " + note.Id);
-
-                }
-                else
-                {
-                    return Ok("There were no changes!");
-                }
-               
+                var updatedNote = await _notesService.UpdateNoteAsync(Id, noteDTO);
+                return Ok(updatedNote);
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest("Note with this Id not found");
+                return BadRequest(ex.Message);
             }
         }
+
         [HttpDelete("/api/DeleteNote")]
         public ActionResult DeleteNote([FromBody] int id)
         {
