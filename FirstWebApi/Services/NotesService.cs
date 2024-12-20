@@ -68,5 +68,37 @@ namespace FirstWebApi.Services
                 throw new Exception("Note with this Id not found");
             }
         }
+
+        public async Task<Note> CreateNote(NoteDTO noteDTO)
+        {
+            if (string.IsNullOrWhiteSpace(noteDTO.Title))
+            {
+                throw new Exception("Please enter valid value in Title!");
+            }
+
+            if (string.IsNullOrWhiteSpace(noteDTO.Description))
+            {
+                throw new Exception("Please enter valid value in Description!");
+            }
+
+            Note note = new Note
+            {
+                NotebookId = noteDTO.NotebookId,
+                Title = noteDTO.Title,
+                Description = noteDTO.Description,
+                Done = noteDTO.Done,
+            };
+
+            await _dataContext.Notes.AddAsync(note);
+
+            if (_dataContext.SaveChanges() > 0)
+            {
+                return note;
+            }
+            else
+            {
+                throw new Exception("There were no changes!");
+            }
+        }
     }
 }
