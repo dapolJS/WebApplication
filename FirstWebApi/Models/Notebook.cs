@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using Microsoft.Extensions.Hosting;
 
 namespace FirstWebApi.Models
 {
@@ -7,8 +6,8 @@ namespace FirstWebApi.Models
     {
         public int Id { get; set; }
         public string Title { get; set; } = "";
-        public ICollection<Note> Notes { get; set; }
-        public string UniqueKey { get; set; }
+        public ICollection<Note>? Notes { get; set; }
+        public string UniqueKey { get; set; } = "";
         [JsonIgnore]
         public Room Room { get; set; }
     }
