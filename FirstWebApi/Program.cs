@@ -12,10 +12,10 @@ builder.Services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase(databa
 
 // Register NotesService with Dependency Injection
 builder.Services.AddScoped<NotesService>();
-builder.Services.AddScoped<NotebooksService>()
+builder.Services.AddScoped<NotebooksService>();
 
 /* TODO: 
-* 1. ONGOING >>> I need to create some special token(room) which will have notebooks sharable
+* 1. DONE === I need to create some special token(room)
 * 2. DONE === If notebook exists do not allow to create new one
 * 3. DONE === Each note should be easily assigned to notebook without new notebook being created
 * 4. DONE === Each note should be easy to edit if not entering any values or leaving empty strings
@@ -24,9 +24,15 @@ builder.Services.AddScoped<NotebooksService>()
 * 7. DONE === Fix note.Done issue that is note.Done not provided it autofills as false even if value existed
 * 8. DONE === Try to init DTO's for notebook perhaps ? and others if possible
 * 9. DONE === Separate Notebook controllers and Room controllers from Notes controlles
-* 10. Improve apis to get many and get 1 with single endpoint
-* 11. Improve delete endpoint to delete 1 and delete all notes
-* 12. Test all endpoits thoroughly!
+* 10. GetNotebooks endpoint should have functionality to filter data by partial title and return single notebook by id
+* 11. Implement delete endpoint to delete 1 and delete all notes
+* 12. DONE === Test all endpoits thoroughly!
+* 13. GetNotes endpoint should have functionality to filter notes by partial title or partial description
+* 14. GetNotes endpoint should have functionality to retrieve also single note by id
+* 15. Implement DeleteNotebook by id and delete all notebooks
+* 16. Implement DeleteRoom by id
+* 17. Implement rooms with data can be viewed only if you have unique key
+* 18. Implement github actions to run unittests
 */
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

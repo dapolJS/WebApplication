@@ -35,31 +35,7 @@ namespace FirstWebApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }
-            //Notebook existingNotebook = _dataContext.Notebooks.FirstOrDefault(n => n.Id == notebook.Id);
-            //Notebook existingNotebookTitle = _dataContext.Notebooks.FirstOrDefault(n => n.Title == notebook.Title);
-            //if (existingNotebook == null)
-            //{
-            //    if (notebook.Title == null)
-            //    {
-            //        return BadRequest("Failed to create Notebook. Please enter Title!");
-            //    }
-            //    if (existingNotebookTitle != null)
-            //    {
-            //        return BadRequest("Failed to create Notebook. Title already exists!");
-            //    }
-            //    else
-            //    {
-            //        _dataContext.Entry(notebook).Reference(x => x.Title);
-            //        _dataContext.Entry(notebook).Reference(x => x.Title);
-            //        _dataContext.SaveChanges();
-            //    }
-            //}
-            //else
-            //{
-            //    return BadRequest("Failed to create Notebook. Notebook with same Id exists!");
-            //}
-            //return Ok("Succesfully created note with Id: " + notebook.Id + " and Title: " + notebook.Title);
+            }  
         }
     }
 }

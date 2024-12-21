@@ -48,6 +48,18 @@ namespace FirstWebApi.Services
                 {
                     throw new Exception("Please enter valid value in Description!");
                 }
+                if (noteDTO.NotebookId != 0)
+                {
+                    note.NotebookId = noteDTO.NotebookId;
+                }
+                else if (noteDTO.NotebookId == 0)
+                {
+                    Console.WriteLine("Ignored empty title");
+                }
+                else
+                {
+                    throw new Exception("Please enter valid value in NotebookId!");
+                }
                 if (noteDTO.Done != null)
                 {
                     note.Done = noteDTO.Done;
