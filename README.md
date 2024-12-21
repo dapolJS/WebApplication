@@ -23,5 +23,5 @@ Idea for notes to be shared between clients.
 18. DONE === Implement github actions to run unittests
 19. Implement connection to MSSQL
 20. DONE === Implement unit tests solution
-21. Implement real unit tests
+21. Implement real unit tests for models controllers services
 22. Implement API smoke tests?
