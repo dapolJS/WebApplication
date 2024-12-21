@@ -20,7 +20,8 @@ Idea for notes to be shared between clients.
 15. Implement DeleteNotebook by id and delete all notebooks
 16. Implement DeleteRoom by id
 17. Implement rooms with data can be viewed only if you have unique key
-18. Implement github actions to run unittests
+18. DONE === Implement github actions to run unittests
 19. Implement connection to MSSQL
-20. Implement unit tests
-21. Implement API smoke tests?
+20. DONE === Implement unit tests solution
+21. Implement real unit tests
+22. Implement API smoke tests?
