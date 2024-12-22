@@ -2,7 +2,7 @@
 
 namespace FirstWebApi.Models
 {
-    public class DataContext(DbContextOptions options) : DbContext(options)
+    public class DataContext(DbContextOptions<DataContext> options) : DbContext(options) // this data context was used for in memory database usage. should I switch between contexts for testing ?
     {
         public DbSet<Note> Notes { get; set; }
         public DbSet<Notebook> Notebooks { get; set; }

@@ -9,6 +9,7 @@
         public Room()
         {
             UniqueKey = Guid.NewGuid().ToString();
+            Notebooks = new List<Notebook>();  // Initialize the Notebooks collection
         }
 
     }
