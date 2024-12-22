@@ -2,7 +2,6 @@
 using FirstWebApi.Models;
 using FirstWebApi.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FirstWebApi.Controllers
 {

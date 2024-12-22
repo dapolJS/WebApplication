@@ -29,7 +29,7 @@ namespace FirstWebApi.Controllers
 
             try
             {
-                var createNotebook = _notebooksService.CreateNotebook(notebookDTO);
+                var createNotebook = await _notebooksService.CreateNotebook(notebookDTO);
                 return Ok(createNotebook);
             }
             catch (Exception ex)
