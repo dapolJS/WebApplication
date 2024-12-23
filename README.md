@@ -25,4 +25,6 @@ Idea for notes to be shared between clients.
 20. DONE === Implement unit tests solution
 21. Implement real unit tests for models controllers services
 22. Implement API smoke tests?
-23. Test
+23. Implement database for testing
+24. Deploy AWS/Azure?
+25. Test
