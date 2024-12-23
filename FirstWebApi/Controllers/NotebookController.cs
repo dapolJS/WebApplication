@@ -17,10 +17,32 @@ namespace FirstWebApi.Controllers
             _notebooksService = notebooksService;
         }
 
-        [HttpGet("/api/GetNotebooks")]
-        public ActionResult<IEnumerable<Notebook>> GetNotebooks()
+        [HttpGet("/api/Notebook/{Id}/{Title}")]
+        public ActionResult<Notebook> Notebook(int Id = 0, string Title = "None")
         {
-            return _dataContext.Notebooks.Include(x => x.Notes).ToList();
+            if (Id != 0)
+            {
+                var notebook = _dataContext.Notebooks.FirstOrDefault(x => x.Id == Id);
+                if (notebook == null)
+                {
+                    return NotFound("Id is not found!");
+                }
+                return Ok(notebook);
+            }
+            else if (Title != "None")
+            {
+                var notebook = _dataContext.Notebooks.FirstOrDefault(x => x.Title == Title);
+                if (notebook == null)
+                {
+                    return NotFound("Title not found!");
+                }
+                return Ok(notebook);
+            }
+            else
+            {
+                var notebooks = _dataContext.Notebooks.Include(x => x.Notes).ToList();
+                return Ok(notebooks); // Return the full list
+            }
         }
 
         [HttpPost("/api/CreateNotebook")]
@@ -35,7 +57,7 @@ namespace FirstWebApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }  
+            }
         }
     }
 }
