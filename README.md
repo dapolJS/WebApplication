@@ -8,18 +8,13 @@ Idea for notes to be shared between clients.
 3. DONE === Each note should be easily assigned to notebook without new notebook being created
 4. DONE === Each note should be easy to edit if not entering any values or leaving empty strings
 5. DONE === Throw bad requests instead of new errors
-6. Add AUTH based on token with expiration time ?
 7. DONE === Fix note.Done issue that is note.Done not provided it autofills as false even if value existed
 8. DONE === Try to init DTO's for notebook perhaps ? and others if possible
 9. DONE === Separate Notebook controllers and Room controllers from Notes controlles
-10. GetNotebooks endpoint should have functionality to filter data by partial title and return single notebook by id
-11. Implement delete endpoint to delete 1 and delete all notes
+10. DONE === GetNotebooks endpoint should have functionality to filter data by partial title and return single notebook by id
 12. DONE === Test all endpoits thoroughly!
-13. GetNotes endpoint should have functionality to filter notes by partial title or partial description
-14. GetNotes endpoint should have functionality to retrieve also single note by id
-15. Implement DeleteNotebook by id and delete all notebooks
-16. Implement DeleteRoom by id
-17. Implement rooms with data can be viewed only if you have unique key
+13. DONE === GetNotes endpoint should have functionality to filter notes by partial title or partial description
+14. DONE === GetNotes endpoint should have functionality to retrieve also single note by id
 18. DONE === Implement github actions to run unittests
 19. DONE === Implement connection to MSSQL
 20. DONE === Implement unit tests solution
@@ -27,4 +22,9 @@ Idea for notes to be shared between clients.
 22. Implement API smoke tests?
 23. Implement database for testing
 24. Deploy AWS/Azure?
-25. Test
+25. Add AUTH based on token with expiration time ?
+26. Implement delete endpoint to delete 1 and delete all notes
+27. Implement DeleteNotebook by id and delete all notebooks
+28. Implement DeleteRoom by id
+29. Implement rooms with data can be viewed only if you have unique key
+30. Test
