@@ -81,7 +81,7 @@ namespace FirstWebApi.Services
             }
         }
 
-        public async Task<Note> CreateNote(NoteDTO noteDTO)
+        public Note CreateNote(NoteDTO noteDTO)
         {
             if (string.IsNullOrWhiteSpace(noteDTO.Title))
             {
@@ -101,7 +101,7 @@ namespace FirstWebApi.Services
                 Done = noteDTO.Done,
             };
 
-            await _dataContext.Notes.AddAsync(note);
+            _dataContext.Notes.AddAsync(note);
 
             if (_dataContext.SaveChanges() > 0)
             {
