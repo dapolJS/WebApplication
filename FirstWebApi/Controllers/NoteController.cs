@@ -16,30 +16,50 @@ namespace FirstWebApi.Controllers
             _notesService = notesService;
         }
 
-        [HttpGet("/api/GetNotes")]
-        public ActionResult<IEnumerable<Note>> GetNotes()
+        [HttpGet("/api/GetNotes/{Id}/{Title}")]
+        public ActionResult<Note> GetNotes(int Id = 0, string Title = "None")
         {
-            return _dataContext.Notes.ToList();
-
+            if (Id != 0)
+            {
+                var note = _dataContext.Notes.FirstOrDefault(x => x.Id == Id);
+                if (note == null)
+                {
+                    return NotFound("Note by Id not found!");
+                }
+                return Ok(note);
+            }
+            else if (Title != "None")
+            {
+                var note = _dataContext.Notes.Where(x => x.Title.ToLower().Contains(Title.ToLower()));
+                if (!note.Any())
+                {
+                    return NotFound("Note by Title not found!");
+                }
+                return Ok(note);
+            }
+            else
+            {
+                var notes = _dataContext.Notes.ToList();
+                return Ok(notes);
+            }
         }
 
         [HttpPost("/api/CreateNote")]
-        public async Task<IActionResult> PostNotes(NoteDTO noteDTO)
+        public ActionResult<Note> PostNotes(NoteDTO noteDTO)
         {
             try
             {
-                var createNote = await _notesService.CreateNote(noteDTO);
+                var createNote = _notesService.CreateNote(noteDTO);
                 return Ok(createNote);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-
             }
         }
 
         [HttpPut("/api/EditNote")]
-        public async Task<IActionResult> PutNotes(int Id, NoteDTO noteDTO)
+        public async Task<ActionResult<Note>> PutNotes(int Id, NoteDTO noteDTO)
         {
             try
             {
@@ -52,15 +72,15 @@ namespace FirstWebApi.Controllers
             }
         }
 
-        [HttpDelete("/api/DeleteNote")]
-        public ActionResult DeleteNote([FromBody] int id)
+        [HttpDelete("/api/DeleteNote/{Id}")]
+        public ActionResult DeleteNote(int Id)
         {
-            Note existingNote = _dataContext.Notes.FirstOrDefault(n => n.Id == id);
+            Note existingNote = _dataContext.Notes.FirstOrDefault(n => n.Id == Id);
             if (existingNote != null)
             {
                 _dataContext.Notes.Remove(existingNote);
                 _dataContext.SaveChanges();
-                return Ok("Succesfully deleted note with ID: " + id + " and Title: " + existingNote.Title);
+                return Ok("Succesfully deleted note with ID: " + Id + " and Title: " + existingNote.Title);
             }
             else
             {

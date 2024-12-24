@@ -17,7 +17,7 @@ namespace FirstWebApi.Controllers
             _notebooksService = notebooksService;
         }
 
-        [HttpGet("/api/Notebook/{Id}/{Title}")] 
+        [HttpGet("/api/Notebook/{Id}/{Title}")]
         public ActionResult<Notebook> Notebook(int Id = 0, string Title = "None")
         {
             if (Id != 0)
@@ -31,8 +31,8 @@ namespace FirstWebApi.Controllers
             }
             else if (Title != "None")
             {
-                var notebook = _dataContext.Notebooks.Where(x => x.Title.Contains(Title));
-                if (notebook == null)
+                var notebook = _dataContext.Notebooks.Where(x => x.Title.ToLower().Contains(Title.ToLower()));
+                if (!notebook.Any())
                 {
                     return NotFound("Title not found!");
                 }
@@ -41,7 +41,7 @@ namespace FirstWebApi.Controllers
             else
             {
                 var notebooks = _dataContext.Notebooks.Include(x => x.Notes).ToList();
-                return Ok(notebooks); // Return the full list
+                return Ok(notebooks);
             }
         }
 

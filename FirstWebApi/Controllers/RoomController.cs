@@ -5,20 +5,18 @@ namespace FirstWebApi.Controllers
 {
     public class RoomController : ControllerBase
     {
-        private readonly DataContext _dataContext;
         private readonly DataContextEF _dataEF;
 
-        public RoomController(DataContext dataContext, DataContextEF dataContextEF)
+        public RoomController(DataContextEF dataContextEF)
         {
-            _dataContext = dataContext;
             _dataEF = dataContextEF;
         }
 
-        [HttpPost("api/CreateRoom")]
-        public ActionResult CreateRoom()
+        [HttpGet("/api/GetRooms/")]
+        public ActionResult<Room> GetRooms()
         {
-            Room room = new Room();
-            return Ok(room.UniqueKey);
+            var rooms = _dataEF.Room.ToList();
+            return Ok(rooms);
         }
 
         [HttpPost("/api/AddRoom")]
