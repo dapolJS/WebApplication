@@ -72,19 +72,28 @@ namespace FirstWebApi.Controllers
             }
         }
 
-        [HttpDelete("/api/DeleteNote/{Id}")]
+        [HttpDelete("/api/DeleteNote/{Id}")] // Delete all notes if Id = 0 is not provided
         public ActionResult DeleteNote(int Id)
         {
             Note existingNote = _dataContext.Notes.FirstOrDefault(n => n.Id == Id);
-            if (existingNote != null)
+            IEnumerable<Note> allNotes = _dataContext.Notes.Where(x => x != null);
+
+            if (existingNote != null) // Deletes note by Id
             {
                 _dataContext.Notes.Remove(existingNote);
                 _dataContext.SaveChanges();
-                return Ok("Succesfully deleted note with ID: " + Id + " and Title: " + existingNote.Title);
+                return Ok($"Succesfully deleted Note \n Title : {existingNote.Title} \n Id : {existingNote.Id}");
+            }
+            else if (Id == 0) // Deletes all notes if Id is 0
+            {
+                int notesCount = allNotes.Count();
+                _dataContext.Notes.RemoveRange(allNotes);
+                _dataContext.SaveChanges();
+                return Ok($"Succesfully DELETED all : {notesCount} Notes!");
             }
             else
             {
-                return BadRequest("Could not find Note to Delete!");
+                return NotFound($"Note by Id : {Id} not found!");
             }
         }
     }
