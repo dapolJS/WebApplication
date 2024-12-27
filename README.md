@@ -18,13 +18,17 @@ Idea for notes to be shared between clients.
 18. DONE === Implement github actions to run unittests
 19. DONE === Implement connection to MSSQL
 20. DONE === Implement unit tests solution
-21. Implement real unit tests for models controllers services
-22. Implement API smoke tests?
-23. Implement database for testing
-24. Deploy AWS/Azure?
-25. Add AUTH based on token with expiration time ?
-26. Implement delete endpoint to delete 1 and delete all notes
-27. Implement DeleteNotebook by id and delete all notebooks
-28. Implement DeleteRoom by id
-29. Implement rooms with data can be viewed only if you have unique key
-30. Test
+21. Implement real unit tests for models, controllers, services
+22. Implement API smoke tests
+23. Implement entityFramework with MSSQL for all endpoints instead of inmemory database
+24. Implement database for testing
+25. Implement Users who create entities
+26. Implement timestamps
+27. Add AUTH based on token with expiration time ?
+28. DONE === Implement delete endpoint to delete 1 and delete all notes
+29. DONE === Implement DeleteNotebook by id and delete all notebooks
+30. DONE === Implement DeleteRoom by id or all rooms
+31. Implement so that rooms with data can be viewed only if you have unique key
+32. Implement to delete rooms notes and notebooks only by the creators
+33. Test APP
+34. Deploy to AWS or Azure
