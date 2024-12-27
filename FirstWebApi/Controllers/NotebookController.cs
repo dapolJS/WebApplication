@@ -59,5 +59,29 @@ namespace FirstWebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpDelete("/api/{Id}")]
+        public ActionResult DeleteNotebook(int Id)
+        {
+            Notebook existingNotebook = _dataContext.Notebooks.FirstOrDefault(x => x.Id == Id);
+            IEnumerable<Notebook> allNotebooks = _dataContext.Notebooks.Where(x => x != null);
+
+            if (existingNotebook != null) // Deletes notebook by Id
+            {
+                _dataContext.Notebooks.Remove(existingNotebook);
+                _dataContext.SaveChanges();
+                return Ok($"Succesfully deleted Notebook \n Title : {existingNotebook.Title} \n Id : {existingNotebook.Id}");
+            }
+            else if (Id == 0) // Deletes all notebooks if Id is 0
+            {
+                int notebooksCount = allNotebooks.Count();
+                _dataContext.Notebooks.RemoveRange(allNotebooks);
+                _dataContext.SaveChanges();
+                return Ok($"Sucessfully DELETED all : {notebooksCount} Notebooks!");
+            }
+            else
+            {
+                return NotFound($"Notebook by Id : {Id} not found");
+            }
+        }
     }
 }
