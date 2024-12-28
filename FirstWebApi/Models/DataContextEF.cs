@@ -6,6 +6,7 @@ namespace FirstWebApi.Models
     {
         public DbSet<Note> Note { get; set; }
         public DbSet<Room> Room { get; set; }
+        public DbSet<Notebook> Notebook { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
@@ -19,8 +20,17 @@ namespace FirstWebApi.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema("NotesAppSchema");
-            modelBuilder.Entity<Note>();
-            modelBuilder.Entity<Room>();
+
+            modelBuilder.Entity<Note>()
+                   .HasOne(n => n.Notebook)
+                   .WithMany(e => e.Notes)
+                   .HasForeignKey(e => e.NotebookId)
+                   .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Notebook>()
+                .HasOne(e => e.Room)
+                .WithMany(e => e.Notebooks)
+                .HasPrincipalKey(e => e.UniqueKey);
         }
 
     }

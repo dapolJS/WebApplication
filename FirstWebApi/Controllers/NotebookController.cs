@@ -8,13 +8,13 @@ namespace FirstWebApi.Controllers
 {
     public class NotebookController : ControllerBase
     {
-        private readonly DataContext _dataContext;
         private readonly NotebooksService _notebooksService;
-        public NotebookController(DataContext dataContext, NotebooksService notebooksService)
+        private readonly DataContextEF _dataContextEF;
+        public NotebookController(DataContextEF dataContextEF, NotebooksService notebooksService)
         {
 
-            _dataContext = dataContext;
             _notebooksService = notebooksService;
+            _dataContextEF = dataContextEF;
         }
 
         [HttpGet("/api/Notebook/{Id}/{Title}")]
@@ -22,7 +22,7 @@ namespace FirstWebApi.Controllers
         {
             if (Id != 0)
             {
-                var notebook = _dataContext.Notebooks.FirstOrDefault(x => x.Id == Id);
+                var notebook = _dataContextEF.Notebook.FirstOrDefault(x => x.Id == Id);
                 if (notebook == null)
                 {
                     return NotFound("Id is not found!");
@@ -31,7 +31,7 @@ namespace FirstWebApi.Controllers
             }
             else if (Title != "None")
             {
-                var notebook = _dataContext.Notebooks.Where(x => x.Title.ToLower().Contains(Title.ToLower()));
+                var notebook = _dataContextEF.Notebook.Where(x => x.Title.ToLower().Contains(Title.ToLower()));
                 if (!notebook.Any())
                 {
                     return NotFound("Title not found!");
@@ -40,7 +40,7 @@ namespace FirstWebApi.Controllers
             }
             else
             {
-                var notebooks = _dataContext.Notebooks.Include(x => x.Notes).ToList();
+                var notebooks = _dataContextEF.Notebook.Include(x => x.Notes).ToList();
                 return Ok(notebooks);
             }
         }
@@ -62,20 +62,20 @@ namespace FirstWebApi.Controllers
         [HttpDelete("/api/{Id}")]
         public ActionResult DeleteNotebook(int Id)
         {
-            Notebook existingNotebook = _dataContext.Notebooks.FirstOrDefault(x => x.Id == Id);
-            IEnumerable<Notebook> allNotebooks = _dataContext.Notebooks.Where(x => x != null);
+            Notebook existingNotebook = _dataContextEF.Notebook.FirstOrDefault(x => x.Id == Id);
+            IEnumerable<Notebook> allNotebooks = _dataContextEF.Notebook.Where(x => x != null);
 
             if (existingNotebook != null) // Deletes notebook by Id
             {
-                _dataContext.Notebooks.Remove(existingNotebook);
-                _dataContext.SaveChanges();
+                _dataContextEF.Notebook.Remove(existingNotebook);
+                _dataContextEF.SaveChanges();
                 return Ok($"Succesfully deleted Notebook \n Title : {existingNotebook.Title} \n Id : {existingNotebook.Id}");
             }
             else if (Id == 0) // Deletes all notebooks if Id is 0
             {
                 int notebooksCount = allNotebooks.Count();
-                _dataContext.Notebooks.RemoveRange(allNotebooks);
-                _dataContext.SaveChanges();
+                _dataContextEF.Notebook.RemoveRange(allNotebooks);
+                _dataContextEF.SaveChanges();
                 return Ok($"Sucessfully DELETED all : {notebooksCount} Notebooks!");
             }
             else

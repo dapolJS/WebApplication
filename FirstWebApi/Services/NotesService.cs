@@ -5,16 +5,16 @@ namespace FirstWebApi.Services
 {
     public class NotesService
     {
-        private readonly DataContext _dataContext;
+        private readonly DataContextEF _dataContextEF;
 
-        public NotesService(DataContext dataContext)
+        public NotesService(DataContextEF dataContextEF)
         {
-            _dataContext = dataContext;
+            _dataContextEF = dataContextEF;
         }
 
         public async Task<Note> UpdateNoteAsync(int id, NoteDTO noteDTO)
         {
-            var note = await _dataContext.Notes.FindAsync(id);
+            var note = await _dataContextEF.Note.FindAsync(id);
 
             if (note == null)
             {
@@ -64,7 +64,7 @@ namespace FirstWebApi.Services
                 {
                     note.Done = noteDTO.Done;
                 }
-                if (_dataContext.SaveChanges() > 0)
+                if (_dataContextEF.SaveChanges() > 0)
                 {
                     return note;
 
@@ -101,9 +101,9 @@ namespace FirstWebApi.Services
                 Done = noteDTO.Done,
             };
 
-            _dataContext.Notes.AddAsync(note);
+            _dataContextEF.Note.AddAsync(note);
 
-            if (_dataContext.SaveChanges() > 0)
+            if (_dataContextEF.SaveChanges() > 0)
             {
                 return note;
             }
