@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase(databaseName: "NotesList")); // When you dont want to setup database use this .net in memory functionality
+// builder.Services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase(databaseName: "NotesList")); // When you dont want to setup database use this .net in memory functionality
 // Use SQL Server for DataContextEF
 builder.Services.AddDbContext<DataContextEF>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))); // Use the connection string name from appsettings.json
 

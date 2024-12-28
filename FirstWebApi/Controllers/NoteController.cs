@@ -8,12 +8,12 @@ namespace FirstWebApi.Controllers
     public class NoteController : ControllerBase
     {
 
-        private readonly DataContext _dataContext;
         private readonly NotesService _notesService;
-        public NoteController(DataContext dataContext, NotesService notesService)
+        private readonly DataContextEF _dataContextEF;
+        public NoteController(DataContextEF dataContextEF, NotesService notesService)
         {
-            _dataContext = dataContext;
             _notesService = notesService;
+            _dataContextEF = dataContextEF;
         }
 
         [HttpGet("/api/GetNotes/{Id}/{Title}")]
@@ -21,7 +21,7 @@ namespace FirstWebApi.Controllers
         {
             if (Id != 0)
             {
-                var note = _dataContext.Notes.FirstOrDefault(x => x.Id == Id);
+                var note = _dataContextEF.Note.FirstOrDefault(x => x.Id == Id);
                 if (note == null)
                 {
                     return NotFound("Note by Id not found!");
@@ -30,7 +30,7 @@ namespace FirstWebApi.Controllers
             }
             else if (Title != "None")
             {
-                var note = _dataContext.Notes.Where(x => x.Title.ToLower().Contains(Title.ToLower()));
+                var note = _dataContextEF.Note.Where(x => x.Title.ToLower().Contains(Title.ToLower()));
                 if (!note.Any())
                 {
                     return NotFound("Note by Title not found!");
@@ -39,7 +39,7 @@ namespace FirstWebApi.Controllers
             }
             else
             {
-                var notes = _dataContext.Notes.ToList();
+                var notes = _dataContextEF.Note.ToList();
                 return Ok(notes);
             }
         }
@@ -75,20 +75,20 @@ namespace FirstWebApi.Controllers
         [HttpDelete("/api/DeleteNote/{Id}")] // Delete all notes if Id = 0 is not provided
         public ActionResult DeleteNote(int Id)
         {
-            Note existingNote = _dataContext.Notes.FirstOrDefault(n => n.Id == Id);
-            IEnumerable<Note> allNotes = _dataContext.Notes.Where(x => x != null);
+            Note existingNote = _dataContextEF.Note.FirstOrDefault(n => n.Id == Id);
+            IEnumerable<Note> allNotes = _dataContextEF.Note.Where(x => x != null);
 
             if (existingNote != null) // Deletes note by Id
             {
-                _dataContext.Notes.Remove(existingNote);
-                _dataContext.SaveChanges();
+                _dataContextEF.Note.Remove(existingNote);
+                _dataContextEF.SaveChanges();
                 return Ok($"Succesfully deleted Note \n Title : {existingNote.Title} \n Id : {existingNote.Id}");
             }
             else if (Id == 0) // Deletes all notes if Id is 0
             {
                 int notesCount = allNotes.Count();
-                _dataContext.Notes.RemoveRange(allNotes);
-                _dataContext.SaveChanges();
+                _dataContextEF.Note.RemoveRange(allNotes);
+                _dataContextEF.SaveChanges();
                 return Ok($"Succesfully DELETED all : {notesCount} Notes!");
             }
             else
