@@ -20,7 +20,7 @@ Idea for notes to be shared between clients.
 20. DONE === Implement unit tests solution
 21. Implement real unit tests for models, controllers, services
 22. Implement API smoke tests
-23. Implement entityFramework with MSSQL for all endpoints instead of inmemory database
+23. DONE === Implement entityFramework with MSSQL for all endpoints instead of inmemory database
 24. Implement database for testing
 25. Implement Users who create entities
 26. Implement timestamps
