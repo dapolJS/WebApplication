@@ -8,6 +8,11 @@ namespace FirstWebApi.Models
         public DbSet<Room> Room { get; set; }
         public DbSet<Notebook> Notebook { get; set; }
 
+        // Parameterless constructor (for testing or DI purposes)
+        public DataContextEF() : this(new DbContextOptions<DataContextEF>())
+        {
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             if (!options.IsConfigured)
