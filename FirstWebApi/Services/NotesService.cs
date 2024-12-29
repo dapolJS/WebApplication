@@ -6,6 +6,10 @@ namespace FirstWebApi.Services
     public class NotesService
     {
         private readonly DataContextEF _dataContextEF;
+        public NotesService()
+        {
+
+        }
 
         public NotesService(DataContextEF dataContextEF)
         {
