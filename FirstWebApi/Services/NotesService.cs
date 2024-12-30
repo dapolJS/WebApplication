@@ -32,7 +32,7 @@ namespace FirstWebApi.Services
                 {
                     note.Title = noteDTO.Title;
                 }
-                else if (string.IsNullOrEmpty(noteDTO.Title))
+                else if (string.IsNullOrEmpty(noteDTO.Title) && noteDTO.Title != "string")
                 {
                     Console.WriteLine("Ignored empty title");
                 }
@@ -40,7 +40,7 @@ namespace FirstWebApi.Services
                 {
                     throw new Exception("Please enter valid value in Title!");
                 }
-                if (!string.IsNullOrWhiteSpace(noteDTO.Description))
+                if (!string.IsNullOrWhiteSpace(noteDTO.Description) && noteDTO.Description != "string")
                 {
                     note.Description = noteDTO.Description;
                 }
@@ -87,12 +87,12 @@ namespace FirstWebApi.Services
 
         public Note CreateNote(NoteDTO noteDTO)
         {
-            if (string.IsNullOrWhiteSpace(noteDTO.Title))
+            if (string.IsNullOrWhiteSpace(noteDTO.Title) && noteDTO.Title != "string")
             {
                 throw new Exception("Please enter valid value in Title!");
             }
 
-            if (string.IsNullOrWhiteSpace(noteDTO.Description))
+            if (string.IsNullOrWhiteSpace(noteDTO.Description) && noteDTO.Description != "string")
             {
                 throw new Exception("Please enter valid value in Description!");
             }

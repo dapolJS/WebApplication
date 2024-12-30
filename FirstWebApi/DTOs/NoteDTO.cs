@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace FirstWebApi.DTOs
+﻿namespace FirstWebApi.DTOs
 {
     public class NoteDTO
     {

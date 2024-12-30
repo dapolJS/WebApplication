@@ -45,7 +45,7 @@ namespace FirstWebApi.Controllers
         }
 
         [HttpPost("/api/CreateNote")]
-        public ActionResult<Note> PostNotes(NoteDTO noteDTO)
+        public ActionResult<Note> PostNotes([FromBody] NoteDTO noteDTO)
         {
             try
             {
@@ -58,8 +58,8 @@ namespace FirstWebApi.Controllers
             }
         }
 
-        [HttpPut("/api/EditNote")]
-        public async Task<ActionResult<Note>> PutNotes(int Id, NoteDTO noteDTO)
+        [HttpPut("/api/EditNote/{Id}")]
+        public async Task<ActionResult<Note>> PutNotes(int Id, [FromBody] NoteDTO noteDTO)
         {
             try
             {
