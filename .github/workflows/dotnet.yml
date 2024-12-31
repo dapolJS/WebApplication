@@ -34,7 +34,15 @@ jobs:
       
     - name: Build
       run: dotnet build --no-restore
-      
+
+    - name: Wait for SQL Server to be ready
+      run: |
+        # Wait for SQL Server to be available before proceeding
+        while ! nc -z localhost 1433; do
+        echo "Waiting for SQL Server..."
+        sleep 5
+        done
+        echo "SQL Server is up and running."
     - name: Test
       run: dotnet test --no-build --verbosity normal
       env:
