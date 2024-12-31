@@ -95,7 +95,8 @@ jobs:
       run: |
         sudo cp /tmp/TestFirstWebApiNotes.bak /var/opt/mssql/data/
         sudo chmod 777 /var/opt/mssql/data/TestFirstWebApiNotes.bak
-        ls -la /var/opt/mssql/data/  # Verify that the file is copied successfully
+        sudo chown mssql:mssql /var/opt/mssql/data/TestFirstWebApiNotes.bak
+        ls -la /var/opt/mssql/data/
 
     - name: Check if .bak file exists
       run: |
@@ -111,7 +112,6 @@ jobs:
 
     - name: Restore database from backup
       run: |
-        ls -la /var/opt/mssql/data  # Verify that the .bak file is available
         /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -Q "RESTORE DATABASE FirstWebApiNotes FROM DISK='/var/opt/mssql/data/TestFirstWebApiNotes.bak' WITH REPLACE"
 
     - name: Apply Entity Framework Migrations
