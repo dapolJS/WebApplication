@@ -37,10 +37,10 @@ INSERT INTO NotesAppSchema.Notebook (Title, UniqueKey)
 VALUES ('SeedTitle', 'SeedDescription');
 
 INSERT INTO NotesAppSchema.Notebook (Title, UniqueKey) 
-VALUES ('SeedTitle', 'SeedDescription', 0);
+VALUES ('SeedTitle', 'SeedDescription');
 
 INSERT INTO NotesAppSchema.Notebook (Title, UniqueKey) 
-VALUES ('SeedTitle', 'SeedDescription', 0);
+VALUES ('SeedTitle', 'SeedDescription');
 
 SELECT * FROM NotesAppSchema.Notebook
 
