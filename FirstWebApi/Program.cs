@@ -6,7 +6,7 @@ using SwaggerThemes;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
+Console.WriteLine("=====================> " + Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
 if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Testing")
 { // ASPNETCORE_ENVIRONMENT needs to be set to Testing to use test DB
     connectionString = builder.Configuration.GetConnectionString("GithubFirstWebApiNotes");
