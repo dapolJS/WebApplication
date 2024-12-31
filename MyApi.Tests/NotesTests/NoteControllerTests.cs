@@ -156,7 +156,7 @@ namespace MyApi.Tests.NotesTests
             Note jsonContent = JsonConvert.DeserializeObject<Note>(content);
 
             Assert.NotEmpty(content);
-            Assert.Equal(noteDTO.Title, "tt");
+            Assert.Equal(noteDTO.Title, jsonContent.Title);
         }
         // TODO: continue with edit note tests, delete note tests
     }
