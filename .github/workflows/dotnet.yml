@@ -86,12 +86,16 @@ jobs:
         name: database-backup
         path: /tmp
 
+    - name: Create the directory for the backup file
+      run: |
+        sudo mkdir -p /var/opt/mssql/data
+        sudo chmod 777 /var/opt/mssql/data
+
     - name: Copy .bak file to SQL Server accessible directory
       run: |
-        ls /tmp
-        ls /var/opt/mssql/data
         sudo cp /tmp/TestFirstWebApiNotes.bak /var/opt/mssql/data/
         sudo chmod 777 /var/opt/mssql/data/TestFirstWebApiNotes.bak
+        ls -la /var/opt/mssql/data/  # Verify that the file is copied successfully
 
     - name: Check if .bak file exists
       run: |
