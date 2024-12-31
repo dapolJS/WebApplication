@@ -60,6 +60,8 @@ jobs:
     # Add the restore database step
     - name: Restore database from backup
       run: |
+        pwd
+        ls
         # Path to the .bak file in your repository
         BACKUP_FILE_PATH="./DBbackups/TestFirstWebApiNotes.bak"
         
