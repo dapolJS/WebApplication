@@ -48,6 +48,7 @@ jobs:
       run: |
         # Run SQL to create the database (if not exists)
         /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'FirstWebApiNotes') CREATE DATABASE FirstWebApiNotes;"
+    
     - name: Test
       run: dotnet test --no-build --verbosity normal
       env:
