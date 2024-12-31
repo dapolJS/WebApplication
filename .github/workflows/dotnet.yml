@@ -61,7 +61,7 @@ jobs:
     - name: Restore database from backup
       run: |
         # Path to the .bak file in your repository
-        BACKUP_FILE_PATH="./backups/your-database-backup.bak"
+        BACKUP_FILE_PATH="./DBbackups/TestFirstWebApiNotes.bak"
         
         # Ensure the .bak file exists
         if [ ! -f "$BACKUP_FILE_PATH" ]; then
