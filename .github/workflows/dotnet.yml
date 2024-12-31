@@ -69,11 +69,11 @@ jobs:
         dotnet tool install --global dotnet-ef
         echo "$(dotnet --list-sdks)"
 
-    - name: Copy .bak file into container
+    - name: Copy .bak file into /tmp directory
       run: |
-        # Make sure the DBbackups directory exists
-        ls -la /home/runner/work/WebApplication/WebApplication/DBbackups
+        # Ensure the .bak file is copied to the mounted /tmp directory
         cp /home/runner/work/WebApplication/WebApplication/DBbackups/TestFirstWebApiNotes.bak /tmp/TestFirstWebApiNotes.bak
+        ls -la /tmp  # Verify that the file is copied to /tmp
 
     - name: Restore database from backup
       run: |
