@@ -1,4 +1,4 @@
-name: .NET
+name: .NET CI Pipeline
 
 on:
   push:
@@ -7,9 +7,26 @@ on:
     branches: [ "master" ]
 
 jobs:
+  # Build Job: Check out the code, restore dependencies, and build the project
   build:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+    
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+        
+      - name: Restore dependencies
+        run: dotnet restore
+      
+      - name: Build
+        run: dotnet build --no-restore
 
+  # Database Setup Job: Set up SQL Server and check if it's ready
+  sql-server-setup:
+    runs-on: ubuntu-latest
     services:
       sqlserver:
         image: mcr.microsoft.com/mssql/server:2019-latest
@@ -19,72 +36,45 @@ jobs:
         env:
           ACCEPT_EULA: "Y"
           SA_PASSWORD: "YourStrong!Passw0rd"  # Replace with a strong password
-        # The service will expose SQL Server on port 1433 and wait until SQL Server is healthy
-
-    steps:
-    - uses: actions/checkout@v4
     
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 9.0.x
-        
-    - name: Restore dependencies
-      run: dotnet restore
-      
-    - name: Build
-      run: dotnet build --no-restore
+    steps:
+      - name: Wait for SQL Server to be ready
+        run: |
+          while ! nc -z localhost 1433; do
+            echo "Waiting for SQL Server..."
+            sleep 5
+          done
+          echo "SQL Server is up and running."
 
-    - name: Set up SQL Server tools
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y curl gnupg
-        curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-        curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
-        sudo apt-get update
-        sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
-        # Add sqlcmd to the path
-        echo "export PATH=$PATH:/opt/mssql-tools/bin" >> ~/.bashrc
-        source ~/.bashrc
+  # Create Database Job: Ensure the database exists
+  create-database:
+    runs-on: ubuntu-latest
+    needs: sql-server-setup  # Ensure this job only runs after SQL Server is ready
+    steps:
+      - name: Create Database if not exists
+        run: |
+          /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'FirstWebApiNotes') CREATE DATABASE FirstWebApiNotes;"
 
+  # Migrations Job: Apply Entity Framework migrations
+  migrations:
+    runs-on: ubuntu-latest
+    needs: create-database  # Ensure this job only runs after the database creation
+    steps:
+      - name: Install dotnet-ef tool
+        run: |
+          dotnet tool install --global dotnet-ef
 
-    - name: Wait for SQL Server to be ready
-      run: |
-        # Wait for SQL Server to be available before proceeding
-        while ! nc -z localhost 1433; do
-        echo "Waiting for SQL Server..."
-        sleep 5
-        done
-        echo "SQL Server is up and running."
+      - name: Apply Entity Framework Migrations
+        run: |
+          dotnet ef database update --project ./FirstWebApi/FirstWebApi.csproj --configuration Release --context DataContextEF
+        env:
+          ASPNETCORE_ENVIRONMENT: "Testing"
 
-    # Add the restore database step
-
-    - name: Create Database if not exists
-      run: |
-        # Run SQL to create the database (if not exists)
-        /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'FirstWebApiNotes') CREATE DATABASE FirstWebApiNotes;"
-
-    - name: Install dotnet-ef tool
-      run: |
-        dotnet tool install --global dotnet-ef
-        echo "$(dotnet --list-sdks)"
-
-    - name: Apply Entity Framework Migrations
-      run: |
-        dotnet ef database update --project ./FirstWebApi/FirstWebApi.csproj --configuration Release --context DataContextEF
-      env:
-        # Connection string for your tests. Update accordingly.
-        # Set the environment to "Testing" for this run
-        ASPNETCORE_ENVIRONMENT: "Testing"
-
-      # Run Seed Script (Assuming you've added a seed.sql file in the repository)
-    - name: Seed Database
-      run: |
-         /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -i ./SqlSeed/SQLQuery_3.sql
-
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-      env:
-        # Connection string for your tests. Update accordingly.
-        # Set the environment to "Testing" for this run
-        ASPNETCORE_ENVIRONMENT: "Testing"
+  # Seed Database Job: Seed the database with data
+  seed-database:
+    runs-on: ubuntu-latest
+    needs: migrations  # Ensure this job only runs after migrations are applied
+    steps:
+      - name: Seed Database
+        run: |
+          /opt/mssql-tools/bin/sql
