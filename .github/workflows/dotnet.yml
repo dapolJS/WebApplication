@@ -62,8 +62,11 @@ jobs:
       run: |
         pwd
         ls
+        cd DBbackups
+        pwd
+        ls
         # Path to the .bak file in your repository
-        BACKUP_FILE_PATH="./DBbackups/TestFirstWebApiNotes.bak"
+        BACKUP_FILE_PATH="TestFirstWebApiNotes.bak"
         
         # Ensure the .bak file exists
         if [ ! -f "$BACKUP_FILE_PATH" ]; then
