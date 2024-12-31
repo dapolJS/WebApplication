@@ -57,6 +57,22 @@ jobs:
         done
         echo "SQL Server is up and running."
 
+    # Add the restore database step
+    - name: Restore database from backup
+      run: |
+        # Path to the .bak file in your repository
+        BACKUP_FILE_PATH="./backups/your-database-backup.bak"
+        
+        # Ensure the .bak file exists
+        if [ ! -f "$BACKUP_FILE_PATH" ]; then
+          echo "Backup file not found!"
+          exit 1
+        fi
+
+        # Restore the database
+        /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -Q "RESTORE DATABASE FirstWebApiNotes FROM DISK='$BACKUP_FILE_PATH' WITH REPLACE"
+
+
     - name: Create Database if not exists
       run: |
         # Run SQL to create the database (if not exists)
