@@ -64,37 +64,23 @@ jobs:
         # Run SQL to create the database (if not exists)
         /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'FirstWebApiNotes') CREATE DATABASE FirstWebApiNotes;"
 
-    - name: Restore database from backup
-      run: |
-        pwd
-        ls
-        cd DBbackups
-        pwd
-        ls
-        # Path to the .bak file in your repository
-        BACKUP_FILE_PATH="TestFirstWebApiNotes.bak"
-        
-        # Ensure the .bak file exists
-        if [ ! -f "$BACKUP_FILE_PATH" ]; then
-          echo "Backup file not found!"
-          exit 1
-        fi
-
-        # Copy the .bak file to the SQL Server container's accessible directory
-        sudo cp "$BACKUP_FILE_PATH" /var/opt/mssql/data/
-
-        # Verify that the file has been copied to the correct directory
-        ls /var/opt/mssql/data
-
-        # Restore the database from the .bak file
-        /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -Q "RESTORE DATABASE FirstWebApiNotes FROM DISK='/var/opt/mssql/data/$BACKUP_FILE_PATH' WITH REPLACE"
-
-
-
     - name: Install dotnet-ef tool
       run: |
         dotnet tool install --global dotnet-ef
         echo "$(dotnet --list-sdks)"
+
+    - name: Copy .bak file into container
+      run: |
+        # Make sure the DBbackups directory exists
+        ls -la /home/runner/work/WebApplication/WebApplication/DBbackups
+        cp /home/runner/work/WebApplication/WebApplication/DBbackups/TestFirstWebApiNotes.bak /tmp/TestFirstWebApiNotes.bak
+
+    - name: Restore database from backup
+      run: |
+        # Ensure the .bak file is accessible from within the container
+        ls -la /tmp
+        /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -Q "RESTORE DATABASE FirstWebApiNotes FROM DISK='/tmp/TestFirstWebApiNotes.bak' WITH REPLACE"
+
 
     - name: Apply Entity Framework Migrations
       run: |
