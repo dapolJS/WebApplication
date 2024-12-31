@@ -75,6 +75,12 @@ jobs:
         cp /home/runner/work/WebApplication/WebApplication/DBbackups/TestFirstWebApiNotes.bak /tmp/TestFirstWebApiNotes.bak
         ls -la /tmp  # Verify that the file is copied to /tmp
 
+    - name: Set correct permissions for the backup file
+      run: |
+        sudo chmod 777 /tmp/TestFirstWebApiNotes.bak
+        ls -la /tmp
+
+
     - name: Restore database from backup
       run: |
         # Ensure the .bak file is accessible from within the container
