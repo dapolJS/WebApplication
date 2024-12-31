@@ -7,9 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-if (builder.Environment.IsEnvironment("Testing"))
+if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Testing")
 { // ASPNETCORE_ENVIRONMENT needs to be set to Testing to use test DB
-    connectionString = builder.Configuration.GetConnectionString("TestConnection");
+    connectionString = builder.Configuration.GetConnectionString("GithubFirstWebApiNotes");
 }
 
 // Add services to the container.
