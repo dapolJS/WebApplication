@@ -74,8 +74,14 @@ jobs:
           exit 1
         fi
 
-        # Restore the database
-        /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -Q "RESTORE DATABASE FirstWebApiNotes FROM DISK='$BACKUP_FILE_PATH' WITH REPLACE"
+        # Copy the .bak file to the SQL Server container's accessible directory
+        sudo cp "$BACKUP_FILE_PATH" /var/opt/mssql/data/
+
+        # Verify that the file has been copied to the correct directory
+        ls /var/opt/mssql/data
+
+        # Restore the database from the .bak file
+        /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -Q "RESTORE DATABASE FirstWebApiNotes FROM DISK='/var/opt/mssql/data/$BACKUP_FILE_PATH' WITH REPLACE"
 
 
     - name: Create Database if not exists
