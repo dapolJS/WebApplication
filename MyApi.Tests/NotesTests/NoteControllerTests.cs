@@ -230,15 +230,88 @@ namespace MyApi.Tests.NotesTests
         [Fact(DisplayName = " =========== TC10 Edit existing notes Description with new Description")]
         public async Task EditNoteWithNewDescription()
         {
+            Random random = new Random();
+
+            // Generate a random integer between 0 (inclusive) and 100000 (exclusive)
+            int randomNumber = random.Next(0, 100000);
+            int noteId = 6;
+            Note noteDTO = new Note
+            {
+                Description = $"Test Edit Description{randomNumber}",
+            };
+
+            var response = await _client.PutAsync($"/api/EditNote/{noteId}", new StringContent(
+                JsonConvert.SerializeObject(noteDTO), Encoding.UTF8, "application/json"));
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(" ===> EditNoteWithNewDescription Response body : " + content);
+            Note jsonContent = JsonConvert.DeserializeObject<Note>(content);
+
+            Assert.NotEmpty(content);
+            Assert.Equal(noteDTO.Description, jsonContent.Description);
 
         }
 
         [Fact(DisplayName = " =========== TC11 Edit existing notes Description with empty Description")]
         public async Task EditNoteWithEmptyDescription()
         {
+            int noteId = 6;
+            Note noteDTO = new Note
+            {
+                Description = "",
+            };
+
+            var response = await _client.PutAsync($"/api/EditNote/{noteId}", new StringContent(
+                JsonConvert.SerializeObject(noteDTO), Encoding.UTF8, "application/json"));
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(" ===> EditNoteWithEmptyDescription Response body : " + content);
+            Assert.NotEmpty(content);
+            Assert.Equal("There were no changes!", content);
 
         }
+        [Fact(DisplayName = " =========== TC12 Delete existing note by Id")]
+        public async Task DeleteNoteById()
+        {
 
+            NoteDTO noteDTOtoBeDeleted = new NoteDTO // New note object to be created
+            {
+                Title = "PostNotes",
+                Description = "This is from Integration test",
+                Done = false
+            };
+            // Creating new note to delete in this test
+            var responseToBeDeletedNote = await _client.PostAsync("/api/CreateNote", new StringContent(JsonConvert.SerializeObject(noteDTOtoBeDeleted), Encoding.UTF8, "application/json"));
+            var contentToBeDeleted = await responseToBeDeletedNote.Content.ReadAsStringAsync();
+
+            Console.WriteLine(" ===> contentToBeDeleted Response body : " + contentToBeDeleted);
+            Note jsonContent = JsonConvert.DeserializeObject<Note>(contentToBeDeleted);
+
+            int noteId = jsonContent.Id;
+
+            var response = await _client.DeleteAsync($"/api/DeleteNote/{noteId}");
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(" ===> DeleteNoteById Response body : " + content);
+            Assert.NotEmpty(content);
+            Assert.Contains("Succesfully deleted Note", content);
+        }
+        [Fact(DisplayName = " =========== TC13 Delete none existing note by Id")]
+        public async Task DeleteNoneExistingNoteById()
+        {
+            int noteId = 09128380;
+
+            var response = await _client.DeleteAsync($"/api/DeleteNote/{noteId}");
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(" ===> DeleteNoteById Response body : " + content);
+            Assert.NotEmpty(content);
+            Assert.Contains($"Note by Id : {noteId} not found!", content);
+        }
         // TODO: continue with edit note tests, delete note tests
     }
 }
