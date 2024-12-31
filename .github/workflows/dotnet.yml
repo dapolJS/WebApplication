@@ -69,7 +69,7 @@ jobs:
 
     - name: Apply Entity Framework Migrations
       run: |
-        dotnet ef database update --project ./WebApplication/FirstWebApi/FirstWebApi.csproj --configuration Release
+        dotnet ef database update --configuration Release
 
     - name: Test
       run: dotnet test --no-build --verbosity normal
