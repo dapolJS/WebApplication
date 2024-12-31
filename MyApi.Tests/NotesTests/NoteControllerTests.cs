@@ -28,7 +28,7 @@ namespace MyApi.Tests.NotesTests
 
             Assert.NotNull(notes);  // Verify the list is not null
             Assert.NotEmpty(notes);  // Verify that the list is not empty
-            Assert.Contains(notes, n => n.Title.Contains("PostNotes"));  // Check if a specific note exists
+            Assert.True(notes.Count >= 8);  // Check if there is more then 8 notes
         }
 
         [Fact(DisplayName = " =========== TC2 Create note with Title, Description, Done")]
@@ -54,7 +54,7 @@ namespace MyApi.Tests.NotesTests
             Assert.NotNull(jsonContent.Description);
 
         }
-        [Fact(DisplayName = " =========== TC3 Create note without title")]
+        [Fact(DisplayName = " =========== TC3 Create note with empty title")]
         public async Task PostNotesReturnsBadRequestWithoutTitle()
         {
             NoteDTO noteDTO = new NoteDTO
@@ -72,7 +72,7 @@ namespace MyApi.Tests.NotesTests
             Assert.NotEmpty(content);
             Assert.Equal("Please enter valid value in Title!", content);
         }
-        [Fact(DisplayName = " =========== TC4 Create note without description")]
+        [Fact(DisplayName = " =========== TC4 Create note with empty description")]
         public async Task PostNotesReturnBadResponseWithoutDescription()
         {
             NoteDTO noteDTO = new NoteDTO
@@ -116,22 +116,35 @@ namespace MyApi.Tests.NotesTests
         [Fact(DisplayName = " =========== TC6 Edit existing notes Title with same Title")]
         public async Task EditNoteWithSameTitle()
         {
-            int noteId = 6;
+            int noteId = 7;
             Note noteDTO = new Note
             {
-                Title = "Test Edit Title2",
+                Title = "",
             };
 
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Testing")
+            {
+                noteDTO = new Note
+                {
+                    Title = "SeedTitle",
+                };
+            }
+            else
+            {
+                noteDTO = new Note
+                {
+                    Title = "cipsai"
+                };
+            }
             var response = await _client.PutAsync($"/api/EditNote/{noteId}", new StringContent(
-                JsonConvert.SerializeObject(noteDTO), Encoding.UTF8, "application/json"));
+            JsonConvert.SerializeObject(noteDTO), Encoding.UTF8, "application/json"));
 
             var content = await response.Content.ReadAsStringAsync();
 
             Console.WriteLine(" ===> EditNoteWithSameTitle Response body : " + content);
-            Note jsonContent = JsonConvert.DeserializeObject<Note>(content);
 
             Assert.NotEmpty(content);
-            Assert.Equal(noteDTO.Title, jsonContent.Title);
+            Assert.Equal("There were no changes!", content);
         }
 
         [Fact(DisplayName = " =========== TC7 Edit existing notes Title with new Title")]
@@ -139,7 +152,7 @@ namespace MyApi.Tests.NotesTests
         {
             Random random = new Random();
 
-            // Generate a random integer between 0 (inclusive) and 100 (exclusive)
+            // Generate a random integer between 0 (inclusive) and 100000 (exclusive)
             int randomNumber = random.Next(0, 100000);
             int noteId = 6;
             Note noteDTO = new Note
@@ -158,6 +171,74 @@ namespace MyApi.Tests.NotesTests
             Assert.NotEmpty(content);
             Assert.Equal(noteDTO.Title, jsonContent.Title);
         }
+
+        [Fact(DisplayName = " =========== TC8 Edit existing notes Title with empty Title")]
+        public async Task EditNoteWithEmptyTitle()
+        {
+            int noteId = 6;
+            Note noteDTO = new Note
+            {
+                Title = "",
+            };
+
+            var response = await _client.PutAsync($"/api/EditNote/{noteId}", new StringContent(
+                JsonConvert.SerializeObject(noteDTO), Encoding.UTF8, "application/json"));
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(" ===> EditNoteWithEmptyTitle Response body : " + content);
+            Assert.NotEmpty(content);
+            Assert.Equal("There were no changes!", content);
+
+        }
+
+
+        [Fact(DisplayName = " =========== TC9 Edit existing notes Description with same Description")]
+        public async Task EditNoteWithSameDescription()
+        {
+            int noteId = 7;
+            Note noteDTO = new Note
+            {
+                Description = "",
+            };
+
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Testing")
+            {
+                noteDTO = new Note
+                {
+                    Description = "SeedDescription",
+                };
+            }
+            else
+            {
+                noteDTO = new Note
+                {
+                    Description = "cheetos",
+                };
+            }
+
+            var response = await _client.PutAsync($"/api/EditNote/{noteId}", new StringContent(
+                JsonConvert.SerializeObject(noteDTO), Encoding.UTF8, "application/json"));
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            Assert.NotEmpty(content);
+            Assert.Equal("There were no changes!", content);
+
+        }
+
+        [Fact(DisplayName = " =========== TC10 Edit existing notes Description with new Description")]
+        public async Task EditNoteWithNewDescription()
+        {
+
+        }
+
+        [Fact(DisplayName = " =========== TC11 Edit existing notes Description with empty Description")]
+        public async Task EditNoteWithEmptyDescription()
+        {
+
+        }
+
         // TODO: continue with edit note tests, delete note tests
     }
 }
