@@ -78,7 +78,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: database-backup
-        path: /DBbackups/TestFirstWebApiNotes.bak
+        path: ./DBbackups/TestFirstWebApiNotes.bak
 
     - name: Download .bak file
       uses: actions/download-artifact@v3
