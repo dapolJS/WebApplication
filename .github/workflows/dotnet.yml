@@ -58,6 +58,12 @@ jobs:
         echo "SQL Server is up and running."
 
     # Add the restore database step
+
+    - name: Create Database if not exists
+      run: |
+        # Run SQL to create the database (if not exists)
+        /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'FirstWebApiNotes') CREATE DATABASE FirstWebApiNotes;"
+
     - name: Restore database from backup
       run: |
         pwd
@@ -84,11 +90,7 @@ jobs:
         /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -Q "RESTORE DATABASE FirstWebApiNotes FROM DISK='/var/opt/mssql/data/$BACKUP_FILE_PATH' WITH REPLACE"
 
 
-    - name: Create Database if not exists
-      run: |
-        # Run SQL to create the database (if not exists)
-        /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'FirstWebApiNotes') CREATE DATABASE FirstWebApiNotes;"
-    
+
     - name: Install dotnet-ef tool
       run: |
         dotnet tool install --global dotnet-ef
