@@ -7,18 +7,9 @@ on:
     branches: [ "master" ]
 
 jobs:
-  # Job 1: Setup and Build
+  # Job 1: Setup and Build (Including SQL Server Service)
   setup-and-build:
-    runs-on: ubuntu-latest
-    services:
-      sqlserver:
-        image: mcr.microsoft.com/mssql/server:2019-latest
-        options: --health-cmd="exit 0" --health-interval=10s --health-timeout=5s --health-retries=3
-        ports:
-          - 1433:1433
-        env:
-          ACCEPT_EULA: "Y"
-          SA_PASSWORD: "YourStrong!Passw0rd"
+    runs-on: self-hosted  # Use self-hosted runner
 
     steps:
       - uses: actions/checkout@v4
@@ -37,12 +28,21 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
 
+      # Wait for SQL Server to be ready
+      - name: Wait for SQL Server to be ready
+        run: |
+          while ! nc -z localhost 1433; do
+            echo "Waiting for SQL Server..."
+            sleep 5
+          done
+          echo "SQL Server is up and running."
+
   # Job 2: Install SQL Server tools and Database Setup
   database-setup:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted  # Use self-hosted runner
     needs: setup-and-build   # This job runs after the setup-and-build job
     steps:
-      # Reinstall SQL Server tools in this job
+      # Install SQL Server tools
       - name: Install SQL Server tools
         run: |
           sudo apt-get update
@@ -53,15 +53,6 @@ jobs:
           sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
           echo "export PATH=\$PATH:/opt/mssql-tools/bin" >> ~/.bashrc
           source ~/.bashrc
-
-      # Wait for SQL Server to be ready
-      - name: Wait for SQL Server to be ready
-        run: |
-          while ! nc -z localhost 1433; do
-            echo "Waiting for SQL Server..."
-            sleep 5
-          done
-          echo "SQL Server is up and running."
 
       # Create Database if not exists
       - name: Create Database if not exists
@@ -75,21 +66,9 @@ jobs:
 
   # Job 3: Apply Migrations (Reinstall SQL Server tools)
   migrations:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted  # Use self-hosted runner
     needs: database-setup   # This job runs after the database-setup job
     steps:
-      # Reinstall SQL Server tools in this job (same as in previous jobs)
-      - name: Install SQL Server tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl gnupg
-          curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-          curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
-          sudo apt-get update
-          sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
-          echo "export PATH=\$PATH:/opt/mssql-tools/bin" >> ~/.bashrc
-          source ~/.bashrc
-
       # Apply Entity Framework Migrations
       - name: Apply Entity Framework Migrations
         run: |
@@ -100,21 +79,9 @@ jobs:
 
   # Job 4: Run Tests (Reinstall SQL Server tools)
   test:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted  # Use self-hosted runner
     needs: migrations   # This job runs after migrations
     steps:
-      # Reinstall SQL Server tools in this job (same as in previous jobs)
-      - name: Install SQL Server tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl gnupg
-          curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-          curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
-          sudo apt-get update
-          sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
-          echo "export PATH=\$PATH:/opt/mssql-tools/bin" >> ~/.bashrc
-          source ~/.bashrc
-
       # Run Tests
       - name: Run Tests
         run: dotnet test --no-build --verbosity normal
