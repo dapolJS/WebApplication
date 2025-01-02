@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-    
+
       # Setup .NET SDK
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -36,31 +36,10 @@ jobs:
       # Install Docker and Docker Compose
       - name: Install Docker
         run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sudo sh get-docker.sh
+          sudo apt-get update
+          sudo apt-get install -y docker.io
           sudo systemctl start docker
           sudo systemctl enable docker
-
-      # Install Docker Compose
-      - name: Install Docker Compose
-        run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
-
-      # Install SQL Server tools (mssql-tools)
-      - name: Install SQL Server tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl gnupg
-          curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-          curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
-          sudo apt-get update
-          sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
-          echo "export PATH=\$PATH:/opt/mssql-tools/bin" >> ~/.bashrc
-          source ~/.bashrc
-          # Ensure sqlcmd is available
-          sqlcmd -?
 
       # Create and start SQL Server container
       - name: Start SQL Server container
@@ -89,6 +68,25 @@ jobs:
       # Create Database if not exists
       - name: Create Database if not exists
         run: |
+          # Install SQL Server tools
+          sudo apt-get update
+          sudo apt-get install -y curl gnupg
+          curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+          curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+          sudo apt-get update
+          sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
+          
+          # Manually update PATH for current session
+          echo "export PATH=\$PATH:/opt/mssql-tools/bin" >> ~/.bashrc
+          source ~/.bashrc
+          
+          # Force path refresh for current environment
+          export PATH=$PATH:/opt/mssql-tools/bin
+          
+          # Verify sqlcmd installation
+          which sqlcmd
+          
+          # Run sqlcmd to create the database if it doesn't exist
           /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -Q "IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'FirstWebApiNotes') CREATE DATABASE FirstWebApiNotes;"
 
       # Seed Database (Assuming you've added a seed.sql file in your repo)
@@ -101,7 +99,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: database-setup   # This job runs after the database-setup job
     steps:
-      # Install SQL Server tools in this job (same steps as above)
+      # Reinstall SQL Server tools in this job
       - name: Install SQL Server tools
         run: |
           sudo apt-get update
@@ -110,10 +108,16 @@ jobs:
           curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
           sudo apt-get update
           sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
+          
+          # Manually update PATH for current session
           echo "export PATH=\$PATH:/opt/mssql-tools/bin" >> ~/.bashrc
           source ~/.bashrc
-          # Ensure sqlcmd is available
-          sqlcmd -?
+          
+          # Force path refresh for current environment
+          export PATH=$PATH:/opt/mssql-tools/bin
+          
+          # Verify sqlcmd installation
+          which sqlcmd
 
       # Apply Entity Framework Migrations
       - name: Apply Entity Framework Migrations
@@ -128,7 +132,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: migrations   # This job runs after migrations
     steps:
-      # Install SQL Server tools in this job (same steps as above)
+      # Reinstall SQL Server tools in this job
       - name: Install SQL Server tools
         run: |
           sudo apt-get update
@@ -137,10 +141,16 @@ jobs:
           curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
           sudo apt-get update
           sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
+          
+          # Manually update PATH for current session
           echo "export PATH=\$PATH:/opt/mssql-tools/bin" >> ~/.bashrc
           source ~/.bashrc
-          # Ensure sqlcmd is available
-          sqlcmd -?
+          
+          # Force path refresh for current environment
+          export PATH=$PATH:/opt/mssql-tools/bin
+          
+          # Verify sqlcmd installation
+          which sqlcmd
 
       # Run Tests
       - name: Run Tests
