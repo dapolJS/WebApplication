@@ -46,7 +46,7 @@ namespace FirstWebApi.Controllers
         }
 
         [HttpPost("/api/CreateNotebook")]
-        public async Task<IActionResult> CreateNotebook(NotebookDTO notebookDTO)
+        public async Task<IActionResult> CreateNotebook([FromBody] NotebookDTO notebookDTO)
         {
 
             try
@@ -59,7 +59,7 @@ namespace FirstWebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpDelete("/api/{Id}")]
+        [HttpDelete("/api/DeleteNotebook/{Id}")]
         public ActionResult DeleteNotebook(int Id)
         {
             Notebook existingNotebook = _dataContextEF.Notebook.FirstOrDefault(x => x.Id == Id);
@@ -80,7 +80,7 @@ namespace FirstWebApi.Controllers
             }
             else
             {
-                return NotFound($"Notebook by Id : {Id} not found");
+                return NotFound($"Notebook by Id : {Id} not found!");
             }
         }
     }
