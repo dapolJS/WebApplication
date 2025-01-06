@@ -45,22 +45,24 @@ VALUES ('SeedTitle', 'SeedDescription');
 GO
 
 INSERT INTO NotesAppSchema.Room (UniqueKey) 
-VALUES ('SeedUniqueKey');
+VALUES ('SeedUniqueKey-1');
 
 INSERT INTO NotesAppSchema.Room (UniqueKey) 
-VALUES ('SeedUniqueKey');
+VALUES ('SeedUniqueKey-2');
 
 INSERT INTO NotesAppSchema.Room (UniqueKey) 
-VALUES ('SeedUniqueKey');
+VALUES ('SeedUniqueKey-3');
 
 INSERT INTO NotesAppSchema.Room (UniqueKey) 
-VALUES ('SeedUniqueKey');
+VALUES ('SeedUniqueKey-4');
 
 INSERT INTO NotesAppSchema.Room (UniqueKey) 
-VALUES ('SeedUniqueKey');
+VALUES ('SeedUniqueKey-5');
 
 INSERT INTO NotesAppSchema.Room (UniqueKey) 
-VALUES ('SeedUniqueKey');
+VALUES ('SeedUniqueKey-6');
+
+DELETE FROM NotesAppSchema.Room
 
 
 SELECT * FROM NotesAppSchema.Notebook

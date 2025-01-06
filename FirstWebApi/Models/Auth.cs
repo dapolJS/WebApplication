@@ -1,0 +1,4 @@
+namespace FirstWebApi.Models.Auth
+{
+
+}
