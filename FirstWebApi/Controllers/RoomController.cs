@@ -1,5 +1,6 @@
 ﻿using FirstWebApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FirstWebApi.Controllers
 {
@@ -12,7 +13,7 @@ namespace FirstWebApi.Controllers
             _dataEF = dataContextEF;
         }
 
-        [HttpGet("/api/GetRooms/")]
+        [HttpGet("/api/GetRooms")]
         public ActionResult<Room> GetRooms()
         {
             var rooms = _dataEF.Room.ToList();
@@ -26,12 +27,12 @@ namespace FirstWebApi.Controllers
             _dataEF.Room.Add(room);
             if (_dataEF.SaveChanges() > 0)
             {
-                return Ok(room.UniqueKey);
+                return Ok(room);
             }
             return BadRequest("Could not add room using data context EF!");
         }
 
-        [HttpDelete("/api/DeleteRoom{Id}")]
+        [HttpDelete("/api/DeleteRoom/{Id}")]
         public ActionResult DeleteRoom(int Id)
         {
             Room existingRoom = _dataEF.Room.FirstOrDefault(x => x.Id == Id);
