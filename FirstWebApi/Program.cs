@@ -5,7 +5,7 @@ using SwaggerThemes;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("GitHubConnection");
 Console.WriteLine("=====================> " + Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
 
 // Add services to the container.
