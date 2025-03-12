@@ -1,75 +1,42 @@
 using Microsoft.EntityFrameworkCore;
+namespace FirstWebApi.Models;
 
-namespace FirstWebApi.Models
+public class DataContextEF(DbContextOptions<DataContextEF> options) : DbContext(options)
 {
-    public class DataContextEF(DbContextOptions<DataContextEF> options) : DbContext(options)
+    public DbSet<Note> Note { get; set; }
+    public DbSet<Room> Room { get; set; }
+    public DbSet<Notebook> Notebook { get; set; }
+
+    // Parameterless constructor (for testing or DI purposes)
+    public DataContextEF()
+        : this(new DbContextOptions<DataContextEF>()) { }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-        public DbSet<Note> Note { get; set; }
-        public DbSet<Room> Room { get; set; }
-        public DbSet<Notebook> Notebook { get; set; }
-
-        // Parameterless constructor (for testing or DI purposes)
-        public DataContextEF() : this(new DbContextOptions<DataContextEF>())
+        if (!options.IsConfigured)
         {
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            if (!options.IsConfigured)
-            {
-                options.UseSqlServer("Server=localhost;Database=FirstWebApiNotes;TrustServerCertificate=true;Trusted_Connection=true;",
-                    options => options.EnableRetryOnFailure());
-            }
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.HasDefaultSchema("NotesAppSchema");
-
-            modelBuilder.Entity<Note>()
-                   .HasOne(n => n.Notebook)
-                   .WithMany(e => e.Notes)
-                   .HasForeignKey(e => e.NotebookId)
-                   .OnDelete(DeleteBehavior.SetNull);
-
-            modelBuilder.Entity<Notebook>()
-                .HasOne(e => e.Room)
-                .WithMany(e => e.Notebooks)
-                .HasPrincipalKey(e => e.UniqueKey);
+            options.UseSqlServer(
+                "Server=localhost;Database=FirstWebApiNotes;TrustServerCertificate=true;Trusted_Connection=true;",
+                options => options.EnableRetryOnFailure()
+            );
         }
     }
-    // The TestDbContext will be for testing purposes
-    public class TestDataContextEF : DbContext
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public TestDataContextEF(DbContextOptions<TestDataContextEF> options) : base(options) { }
+        modelBuilder.HasDefaultSchema("NotesAppSchema");
 
-        public DbSet<Note> Note { get; set; }
-        public DbSet<Room> Room { get; set; }
-        public DbSet<Notebook> Notebook { get; set; }
+        modelBuilder
+            .Entity<Note>()
+            .HasOne(n => n.Notebook)
+            .WithMany(e => e.Notes)
+            .HasForeignKey(e => e.NotebookId)
+            .OnDelete(DeleteBehavior.SetNull);
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            if (!options.IsConfigured)
-            {
-                options.UseSqlServer("Server=localhost;Database=TestFirstWebApiNotes;TrustServerCertificate=true;Trusted_Connection=true;",
-                    options => options.EnableRetryOnFailure());
-            }
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.HasDefaultSchema("NotesAppSchema");
-
-            modelBuilder.Entity<Note>()
-                .HasOne(n => n.Notebook)
-                .WithMany(e => e.Notes)
-                .HasForeignKey(e => e.NotebookId)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            modelBuilder.Entity<Notebook>()
-                .HasOne(e => e.Room)
-                .WithMany(e => e.Notebooks)
-                .HasPrincipalKey(e => e.UniqueKey);
-        }
+        modelBuilder
+            .Entity<Notebook>()
+            .HasOne(e => e.Room)
+            .WithMany(e => e.Notebooks)
+            .HasPrincipalKey(e => e.UniqueKey);
     }
 }

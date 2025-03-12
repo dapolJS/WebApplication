@@ -31,7 +31,7 @@ namespace FirstWebApi.Controllers
             }
             else if (Title != "None")
             {
-                var notebook = _dataContextEF.Notebook.Where(x => x.Title.ToLower().Contains(Title.ToLower()));
+                var notebook = _dataContextEF.Notebook.Include(x => x.Notes).Where(x => x.Title.ToLower().Contains(Title.ToLower()));
                 if (!notebook.Any())
                 {
                     return NotFound("Title not found!");

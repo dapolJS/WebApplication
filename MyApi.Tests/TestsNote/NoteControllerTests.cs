@@ -116,26 +116,14 @@ namespace MyApi.Tests.NotesTests
         [Fact(DisplayName = " =========== TC6 Edit existing notes Title with same Title")]
         public async Task EditNoteWithSameTitle()
         {
-            int noteId = 7;
+            int noteId = 10;
+
             Note noteDTO = new Note
             {
-                Title = "",
+                Title = "SeedTitle",
             };
-
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Testing")
-            {
-                noteDTO = new Note
-                {
-                    Title = "SeedTitle",
-                };
-            }
-            else
-            {
-                noteDTO = new Note
-                {
-                    Title = "cipsai"
-                };
-            }
+            
+           
             var response = await _client.PutAsync($"/api/EditNote/{noteId}", new StringContent(
             JsonConvert.SerializeObject(noteDTO), Encoding.UTF8, "application/json"));
 
@@ -196,26 +184,12 @@ namespace MyApi.Tests.NotesTests
         [Fact(DisplayName = " =========== TC9 Edit existing notes Description with same Description")]
         public async Task EditNoteWithSameDescription()
         {
-            int noteId = 7;
+            int noteId = 10;
+
             Note noteDTO = new Note
             {
-                Description = "",
+                Description = "SeedDescription",
             };
-
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Testing")
-            {
-                noteDTO = new Note
-                {
-                    Description = "SeedDescription",
-                };
-            }
-            else
-            {
-                noteDTO = new Note
-                {
-                    Description = "cheetos",
-                };
-            }
 
             var response = await _client.PutAsync($"/api/EditNote/{noteId}", new StringContent(
                 JsonConvert.SerializeObject(noteDTO), Encoding.UTF8, "application/json"));

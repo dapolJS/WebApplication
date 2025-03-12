@@ -7,9 +7,9 @@ namespace FirstWebApi.Controllers
 {
     public class NoteController : ControllerBase
     {
-
         private readonly NotesService _notesService;
         private readonly DataContextEF _dataContextEF;
+
         public NoteController(DataContextEF dataContextEF, NotesService notesService)
         {
             _notesService = notesService;
