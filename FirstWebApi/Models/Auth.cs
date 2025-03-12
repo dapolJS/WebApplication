@@ -1,4 +1,1 @@
-namespace FirstWebApi.Models.Auth
-{
-
-}
+namespace FirstWebApi.Models.Auth;

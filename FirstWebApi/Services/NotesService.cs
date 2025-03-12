@@ -6,10 +6,8 @@ namespace FirstWebApi.Services
     public class NotesService
     {
         private readonly DataContextEF _dataContextEF;
-        public NotesService()
-        {
 
-        }
+        public NotesService() { }
 
         public NotesService(DataContextEF dataContextEF)
         {
@@ -40,7 +38,10 @@ namespace FirstWebApi.Services
                 {
                     throw new Exception("Please enter valid value in Title!");
                 }
-                if (!string.IsNullOrWhiteSpace(noteDTO.Description) && noteDTO.Description != "string")
+                if (
+                    !string.IsNullOrWhiteSpace(noteDTO.Description)
+                    && noteDTO.Description != "string"
+                )
                 {
                     note.Description = noteDTO.Description;
                 }
@@ -71,13 +72,11 @@ namespace FirstWebApi.Services
                 if (_dataContextEF.SaveChanges() > 0)
                 {
                     return note;
-
                 }
                 else
                 {
                     throw new Exception("There were no changes!");
                 }
-
             }
             else
             {
