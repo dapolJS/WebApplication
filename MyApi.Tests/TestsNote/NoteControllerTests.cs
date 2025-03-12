@@ -116,8 +116,9 @@ namespace MyApi.Tests.NotesTests
         [Fact(DisplayName = " =========== TC6 Edit existing notes Title with same Title")]
         public async Task EditNoteWithSameTitle()
         {
-            int noteId = 10;
+            int noteId = 7;
 
+            
             Note noteDTO = new Note
             {
                 Title = "SeedTitle",
@@ -184,7 +185,7 @@ namespace MyApi.Tests.NotesTests
         [Fact(DisplayName = " =========== TC9 Edit existing notes Description with same Description")]
         public async Task EditNoteWithSameDescription()
         {
-            int noteId = 10;
+            int noteId = 7;
 
             Note noteDTO = new Note
             {
