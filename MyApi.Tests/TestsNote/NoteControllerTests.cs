@@ -70,7 +70,7 @@ namespace MyApi.Tests.NotesTests
             // Assert
             Console.WriteLine(" ===> Response body : " + content);
             Assert.NotEmpty(content);
-            Assert.Equal("Please enter valid value in Title!", content);
+            Assert.Equal("Please enter valid value in noteDTO.Title!", content);
         }
         [Fact(DisplayName = " =========== TC4 Create note with empty description")]
         public async Task PostNotesReturnBadResponseWithoutDescription()
@@ -88,7 +88,7 @@ namespace MyApi.Tests.NotesTests
 
             Console.WriteLine(" ===> Response body : " + content);
             Assert.NotEmpty(content);
-            Assert.Equal("Please enter valid value in Description!", content);
+            Assert.Equal("Please enter valid value in noteDTO.Description!", content);
 
         }
         [Fact(DisplayName = " =========== TC5 Create note with existing notebook")]
@@ -199,7 +199,6 @@ namespace MyApi.Tests.NotesTests
 
             Assert.NotEmpty(content);
             Assert.Equal("There were no changes!", content);
-
         }
 
         [Fact(DisplayName = " =========== TC10 Edit existing notes Description with new Description")]
