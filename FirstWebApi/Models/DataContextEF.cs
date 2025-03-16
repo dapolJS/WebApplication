@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+
 namespace FirstWebApi.Models;
 
 public class DataContextEF(DbContextOptions<DataContextEF> options) : DbContext(options)

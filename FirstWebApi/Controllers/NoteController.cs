@@ -1,10 +1,12 @@
 ﻿using FirstWebApi.DTOs;
 using FirstWebApi.Models;
 using FirstWebApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FirstWebApi.Controllers
 {
+    // [Authorize] //TODO: figure out how to use sql db instead of in memory
     public class NoteController : ControllerBase
     {
         private readonly NotesService _notesService;
