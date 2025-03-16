@@ -23,10 +23,9 @@ namespace FirstWebApi.Services
                 throw new Exception("Note not found!");
             }
 
-            //// Manually updating models properties using DTO
             if (note != null)
             {
-                if (!string.IsNullOrWhiteSpace(noteDTO.Title))
+                if (!string.IsNullOrWhiteSpace(noteDTO.Title)) //TODO: refactor to guard
                 {
                     note.Title = noteDTO.Title;
                 }
@@ -36,7 +35,7 @@ namespace FirstWebApi.Services
                 }
                 else
                 {
-                    throw new Exception("Please enter valid value in Title!");
+                    throw new ArgumentException("Please enter valid value in Title!");
                 }
                 if (
                     !string.IsNullOrWhiteSpace(noteDTO.Description)
@@ -51,7 +50,7 @@ namespace FirstWebApi.Services
                 }
                 else
                 {
-                    throw new Exception("Please enter valid value in Description!");
+                    throw new ArgumentException("Please enter valid value in Description!");
                 }
                 if (noteDTO.NotebookId != 0)
                 {
@@ -63,7 +62,7 @@ namespace FirstWebApi.Services
                 }
                 else
                 {
-                    throw new Exception("Please enter valid value in NotebookId!");
+                    throw new ArgumentException("Please enter valid value in NotebookId!");
                 }
                 if (noteDTO.Done != null)
                 {
@@ -75,26 +74,19 @@ namespace FirstWebApi.Services
                 }
                 else
                 {
-                    throw new Exception("There were no changes!");
+                    throw new ArgumentException("There were no changes!");
                 }
             }
             else
             {
-                throw new Exception("Note with this Id not found");
+                throw new ArgumentException("Note with this Id not found");
             }
         }
 
         public Note CreateNote(NoteDTO noteDTO)
         {
-            if (string.IsNullOrWhiteSpace(noteDTO.Title) && noteDTO.Title != "string")
-            {
-                throw new Exception("Please enter valid value in Title!");
-            }
-
-            if (string.IsNullOrWhiteSpace(noteDTO.Description) && noteDTO.Description != "string")
-            {
-                throw new Exception("Please enter valid value in Description!");
-            }
+            Guard.IsNotNullOrString(noteDTO.Title);
+            Guard.IsNotNullOrString(noteDTO.Description);
 
             Note note = new Note
             {
@@ -112,7 +104,7 @@ namespace FirstWebApi.Services
             }
             else
             {
-                throw new Exception("There were no changes!");
+                throw new ArgumentException("There were no changes!");
             }
         }
     }

@@ -57,7 +57,6 @@ namespace FirstWebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
         [HttpPut("/api/EditNote/{Id}")]
         public async Task<ActionResult<Note>> PutNotes(int Id, [FromBody] NoteDTO noteDTO)
         {

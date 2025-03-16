@@ -5,7 +5,7 @@ using SwaggerThemes;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("GithubFirstWebApiNotes");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection"); //Switch to GithubFirstWebApiNotes for local testing, DefaultConnection for GitHub Actions
 Console.WriteLine("=====================> " + Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"));
 
 // Add services to the container.

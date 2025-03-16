@@ -69,7 +69,7 @@ namespace MyApi.Tests.NotebookTests
             // Assert
             Console.WriteLine(" ===> Response body : " + content);
             Assert.NotEmpty(content);
-            Assert.Equal("Failed to create Notebook. Please enter Title!", content);
+            Assert.Equal("Please enter valid value in notebookDTO.Title!", content);
         }
         [Fact(DisplayName = " =========== TC4 Create Notebook with empty UniqueKey")]
         public async Task PostNotebookReturnOkWithoutUniqueKey()
