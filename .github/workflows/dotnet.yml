@@ -47,6 +47,9 @@ jobs:
         env:
           ACCEPT_EULA: "Y"
           SA_PASSWORD: "YourStrong!Passw0rd"
+          TEST_USER: ${{ secrets.TEST_USER }}
+          TEST_USER_PSW: ${{ secrets.TEST_USER_PSW }}
+
 
     steps:
       - uses: actions/checkout@v4
