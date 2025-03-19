@@ -1,61 +1,60 @@
 ﻿using FirstWebApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-namespace FirstWebApi.Controllers
+namespace FirstWebApi.Controllers;
+
+[Authorize]
+public class RoomController : ControllerBase
 {
-    public class RoomController : ControllerBase
+    private readonly DataContextEF _dataEF;
+
+    public RoomController(DataContextEF dataContextEF)
     {
-        private readonly DataContextEF _dataEF;
+        _dataEF = dataContextEF;
+    }
 
-        public RoomController(DataContextEF dataContextEF)
+    [HttpGet("/api/GetRooms")]
+    public ActionResult<Room> GetRooms()
+    {
+        var rooms = _dataEF.Room.ToList();
+        return Ok(rooms);
+    }
+
+    [HttpPost("/api/AddRoom")]
+    public ActionResult AddRoom()
+    {
+        Room room = new Room();
+        _dataEF.Room.Add(room);
+        if (_dataEF.SaveChanges() > 0)
         {
-            _dataEF = dataContextEF;
+            return Ok(room);
         }
+        return BadRequest("Could not add room using data context EF!");
+    }
 
-        [HttpGet("/api/GetRooms")]
-        public ActionResult<Room> GetRooms()
+    [HttpDelete("/api/DeleteRoom/{Id}")]
+    public ActionResult DeleteRoom(int Id)
+    {
+        Room existingRoom = _dataEF.Room.FirstOrDefault(x => x.Id == Id);
+        IEnumerable<Room> allRooms = _dataEF.Room.Where(x => x != null);
+
+        if (existingRoom != null) // Deletes room by Id
         {
-            var rooms = _dataEF.Room.ToList();
-            return Ok(rooms);
+            _dataEF.Room.Remove(existingRoom);
+            _dataEF.SaveChanges();
+            return Ok($"Sucessfully DELETED room with \n Id : {Id}");
         }
-
-        [HttpPost("/api/AddRoom")]
-        public ActionResult AddRoom()
+        else if (Id == 0) // Deletes all rooms in Id is 0
         {
-            Room room = new Room();
-            _dataEF.Room.Add(room);
-            if (_dataEF.SaveChanges() > 0)
-            {
-                return Ok(room);
-            }
-            return BadRequest("Could not add room using data context EF!");
+            int roomsCount = allRooms.Count();
+            _dataEF.Room.RemoveRange(allRooms);
+            _dataEF.SaveChanges();
+            return Ok($"Successfully DELETED all : {roomsCount} Rooms!");
         }
-
-        [HttpDelete("/api/DeleteRoom/{Id}")]
-        public ActionResult DeleteRoom(int Id)
+        else
         {
-            Room existingRoom = _dataEF.Room.FirstOrDefault(x => x.Id == Id);
-            IEnumerable<Room> allRooms = _dataEF.Room.Where(x => x != null);
-
-            if (existingRoom != null) // Deletes room by Id
-            {
-                _dataEF.Room.Remove(existingRoom);
-                _dataEF.SaveChanges();
-                return Ok($"Sucessfully DELETED room with \n Id : {Id}");
-            }
-            else if (Id == 0) // Deletes all rooms in Id is 0
-            {
-                int roomsCount = allRooms.Count();
-                _dataEF.Room.RemoveRange(allRooms);
-                _dataEF.SaveChanges();
-                return Ok($"Successfully DELETED all : {roomsCount} Rooms!");
-            }
-            else
-            {
-                return NotFound($"Room by Id : {Id} not found!");
-            }
+            return NotFound($"Room by Id : {Id} not found!");
         }
-
     }
 }

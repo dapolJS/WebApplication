@@ -1,11 +1,13 @@
 ﻿using FirstWebApi.DTOs;
 using FirstWebApi.Models;
 using FirstWebApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FirstWebApi.Controllers
 {
+    [Authorize]
     public class NotebookController : ControllerBase
     {
         private readonly NotebooksService _notebooksService;

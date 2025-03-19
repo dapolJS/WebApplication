@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FirstWebApi.Controllers
 {
-    // [Authorize] //TODO: figure out how to use sql db instead of in memory
+    [Authorize]
     public class NoteController : ControllerBase
     {
         private readonly NotesService _notesService;
