@@ -7,17 +7,23 @@ using SwaggerThemes;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection"); //Switch to GithubFirstWebApiNotes for local testing, DefaultConnection for GitHub Actions
+var connectionString = builder.Configuration.GetConnectionString("GithubFirstWebApiNotes"); //Switch to GithubFirstWebApiNotes for Github testing, DefaultConnection for local testing
 
 // Add services to the container.
 builder.Services.AddControllers();
+
 // builder.Services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase(databaseName: "NotesList")); // When you dont want to setup database use this .net in memory functionality
 // Use SQL Server for DataContextEF
 builder.Services.AddDbContext<DataContextEF>(options => options.UseSqlServer(connectionString)); // Use the connection string name from appsettings.json
-builder.Services.AddDbContext<IdentityDbContext>(options => options.UseSqlServer(connectionString, b => b.MigrationsAssembly("FirstWebApi")));
+builder.Services.AddDbContext<IdentityDbContext>(options =>
+    options.UseSqlServer(connectionString, b => b.MigrationsAssembly("FirstWebApi"))
+);
 
 // builder.Services.AddDbContext<IdentityDbContext>(options => options.UseInMemoryDatabase("AppDb"));
-builder.Services.AddIdentityCore<IdentityUser>().AddEntityFrameworkStores<IdentityDbContext>().AddApiEndpoints();
+builder
+    .Services.AddIdentityCore<IdentityUser>()
+    .AddEntityFrameworkStores<IdentityDbContext>()
+    .AddApiEndpoints();
 builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
 builder.Services.AddAuthorizationBuilder();
 
