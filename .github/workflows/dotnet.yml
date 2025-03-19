@@ -2,9 +2,9 @@ name: .NET
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
           - 1433:1433
         env:
           ACCEPT_EULA: "Y"
-          SA_PASSWORD: "YourStrong!Passw0rd"  # Replace with a strong password
+          SA_PASSWORD: "YourStrong!Passw0rd" # Replace with a strong password
 
     steps:
       - uses: actions/checkout@v4
@@ -36,7 +36,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    needs: build  # Ensure the build job runs first
+    needs: build # Ensure the build job runs first
 
     services:
       sqlserver:
@@ -94,6 +94,8 @@ jobs:
       - name: Apply Entity Framework Migrations
         run: |
           dotnet ef database update --project ./FirstWebApi/FirstWebApi.csproj --configuration Release --context DataContextEF
+          dotnet ef database update --project ./FirstWebApi/FirstWebApi.csproj --configuration Release --context IdentityDbContext
+
         env:
           ASPNETCORE_ENVIRONMENT: "Testing"
 
@@ -117,4 +119,3 @@ jobs:
           ASPNETCORE_ENVIRONMENT: "Testing"
           TEST_USER: ${{ secrets.TEST_USER }}
           TEST_USER_PSW: ${{ secrets.TEST_USER_PSW }}
-
