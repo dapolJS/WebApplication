@@ -15,6 +15,7 @@ public class RoomControllerIntegrationTests : IClassFixture<WebApplicationFactor
     {
         _client = factory.CreateClient();
         _auth = new AuthenticationBearer(_client);
+        new AuthenticationBearer(_client).RegisterAsync().GetAwaiter().GetResult();
     }
 
     [Fact(DisplayName = " =========== TC1 Returns list of existing Rooms")]
