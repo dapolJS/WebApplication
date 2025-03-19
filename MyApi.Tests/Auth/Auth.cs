@@ -35,7 +35,18 @@ public class AuthenticationBearer
             )
         );
 
-        response.EnsureSuccessStatusCode();
+        Console.WriteLine(
+            " ===> RegisterAsync Response : " + response.Content.ReadAsStringAsync().Result
+        );
+
+        if (response.Content.ReadAsStringAsync().Result.Contains("is already taken."))
+        {
+            Console.WriteLine(" ===> Email is already taken");
+        }
+        else
+        {
+            response.EnsureSuccessStatusCode();
+        }
     }
 
     public async Task AuthenticateAsync()
