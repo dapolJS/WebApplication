@@ -52,10 +52,12 @@ public class AuthenticationBearer
             )
         );
 
-        Console.WriteLine(
-            " ===> RegisterAsync Response : " + response.Content.ReadAsStringAsync().Result
-        );
-
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine(
+                " ===> Success to Register Email! : " + response.Content.ReadAsStringAsync().Result
+            );
+        }
         response.EnsureSuccessStatusCode();
     }
 
