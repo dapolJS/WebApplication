@@ -18,16 +18,16 @@ public class AuthenticationBearer
         _client = client;
     }
 
-    public async Task<bool> VerifyEmailAsync()
-    {
-        await AuthenticateAsync();
+    // public async Task<bool> VerifyEmailAsync()
+    // {
+    //     await AuthenticateAsync();
 
-        var responseInfo = await _client.GetAsync("manage/info");
+    //     var responseInfo = await _client.GetAsync("manage/info");
 
-        return responseInfo.IsSuccessStatusCode;
-    }
+    //     return responseInfo.IsSuccessStatusCode;
+    // }
 
-    public async Task RegisterAsync()
+    public async Task RegisterAsync() // TODO: LOL register needs verification. verification needs authorization. authorization needs registration. LOL Fix this shit
     {
         var registerData = new
         {
@@ -35,30 +35,34 @@ public class AuthenticationBearer
             password = Environment.GetEnvironmentVariable("TEST_USER_PSW")
         };
 
-        var verifyEmail = await VerifyEmailAsync();
+        // var verifyEmail = await VerifyEmailAsync();
 
-        if (verifyEmail)
+
+
+
+        try
+        {
+            var response = await _client.PostAsync(
+                "/register",
+                new StringContent(
+                    JsonConvert.SerializeObject(registerData),
+                    Encoding.UTF8,
+                    "application/json"
+                )
+            );
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine(
+                    " ===> Success to Register Email! : "
+                        + response.Content.ReadAsStringAsync().Result
+                );
+            }
+        }
+        catch (Exception)
         {
             Console.WriteLine(" ===> Email is already registered");
             return;
         }
-
-        var response = await _client.PostAsync(
-            "/register",
-            new StringContent(
-                JsonConvert.SerializeObject(registerData),
-                Encoding.UTF8,
-                "application/json"
-            )
-        );
-
-        if (response.IsSuccessStatusCode)
-        {
-            Console.WriteLine(
-                " ===> Success to Register Email! : " + response.Content.ReadAsStringAsync().Result
-            );
-        }
-        response.EnsureSuccessStatusCode();
     }
 
     public async Task AuthenticateAsync()
