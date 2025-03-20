@@ -18,6 +18,15 @@ public class AuthenticationBearer
         _client = client;
     }
 
+    public async Task<System.Net.HttpStatusCode> VerifyEmailAsync()
+    {
+        await AuthenticateAsync();
+
+        var responseInfo = await _client.GetAsync("manage/info");
+
+        return responseInfo.StatusCode;
+    }
+
     public async Task RegisterAsync()
     {
         var registerData = new
@@ -25,6 +34,14 @@ public class AuthenticationBearer
             email = Environment.GetEnvironmentVariable("TEST_USER"),
             password = Environment.GetEnvironmentVariable("TEST_USER_PSW")
         };
+
+        var verifyEmail = await VerifyEmailAsync();
+
+        if (verifyEmail == System.Net.HttpStatusCode.OK)
+        {
+            Console.WriteLine(" ===> Email is already registered");
+            return;
+        }
 
         var response = await _client.PostAsync(
             "/register",
@@ -39,14 +56,7 @@ public class AuthenticationBearer
             " ===> RegisterAsync Response : " + response.Content.ReadAsStringAsync().Result
         );
 
-        if (response.Content.ReadAsStringAsync().Result.Contains("is already taken."))
-        {
-            Console.WriteLine(" ===> Email is already taken");
-        }
-        else
-        {
-            response.EnsureSuccessStatusCode();
-        }
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task AuthenticateAsync()
