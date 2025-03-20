@@ -76,6 +76,12 @@ public class AuthenticationBearer
             )
         );
 
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(
+                "Failed to authenticate" + "\n" + response.Content.ReadAsStringAsync().Result
+            );
+        }
         response.EnsureSuccessStatusCode();
 
         var content = await response.Content.ReadAsStringAsync();
