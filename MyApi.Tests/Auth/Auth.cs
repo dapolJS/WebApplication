@@ -18,13 +18,13 @@ public class AuthenticationBearer
         _client = client;
     }
 
-    public async Task<System.Net.HttpStatusCode> VerifyEmailAsync()
+    public async Task<bool> VerifyEmailAsync()
     {
         await AuthenticateAsync();
 
         var responseInfo = await _client.GetAsync("manage/info");
 
-        return responseInfo.StatusCode;
+        return responseInfo.IsSuccessStatusCode;
     }
 
     public async Task RegisterAsync()
@@ -37,7 +37,7 @@ public class AuthenticationBearer
 
         var verifyEmail = await VerifyEmailAsync();
 
-        if (verifyEmail == System.Net.HttpStatusCode.OK)
+        if (verifyEmail)
         {
             Console.WriteLine(" ===> Email is already registered");
             return;
