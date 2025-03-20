@@ -2,11 +2,11 @@ using System.Net.Http.Headers;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace MyApi.Tests.Auth; // Current Auth is not going to work in GH Actions because there is no database hosted anywhere is just in memory db so I need to register first and then login with same client
+namespace MyApi.Tests.Auth;
 
 public class TokenResponse
 {
-    public string AccessToken { get; }
+    public required string AccessToken { get; set; }
 }
 
 public class AuthenticationBearer

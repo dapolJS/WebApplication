@@ -114,7 +114,7 @@ jobs:
 
       # Run tests
       - name: Test
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test --no-build --verbosity minimal
         env:
           ASPNETCORE_ENVIRONMENT: "Testing"
           TEST_USER: ${{ secrets.TEST_USER }}
