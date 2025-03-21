@@ -11,49 +11,51 @@ namespace FirstWebApi.Controllers
     public class NotebookController : ControllerBase
     {
         private readonly NotebooksService _notebooksService;
-        private readonly DataContextEF _dataContextEF;
-        public NotebookController(DataContextEF dataContextEF, NotebooksService notebooksService)
-        {
+        private readonly DataContextEF _dataContextEf;
 
+        public NotebookController(DataContextEF dataContextEf, NotebooksService notebooksService)
+        {
             _notebooksService = notebooksService;
-            _dataContextEF = dataContextEF;
+            _dataContextEf = dataContextEf;
         }
 
-        [HttpGet("/api/Notebook/{Id}/{Title}")]
-        public ActionResult<Notebook> Notebook(int Id = 0, string Title = "None")
+        [HttpGet("/api/Notebook/{id}/{Title}")]
+        public ActionResult<Notebook> Notebook(int id = 0, string title = "None")
         {
-            if (Id != 0)
+            if (id != 0)
             {
-                var notebook = _dataContextEF.Notebook.FirstOrDefault(x => x.Id == Id);
+                var notebook = _dataContextEf.Notebook.FirstOrDefault(x => x.Id == id);
                 if (notebook == null)
                 {
-                    return NotFound("Id is not found!");
+                    return NotFound("id is not found!");
                 }
+
                 return Ok(notebook);
             }
-            else if (Title != "None")
+            else if (title != "None")
             {
-                var notebook = _dataContextEF.Notebook.Include(x => x.Notes).Where(x => x.Title.ToLower().Contains(Title.ToLower()));
+                var notebook = _dataContextEf.Notebook.Include(x => x.Notes)
+                    .Where(x => x.Title.ToLower().Contains(title.ToLower()));
                 if (!notebook.Any())
                 {
                     return NotFound("Title not found!");
                 }
+
                 return Ok(notebook);
             }
             else
             {
-                var notebooks = _dataContextEF.Notebook.Include(x => x.Notes).ToList();
+                var notebooks = _dataContextEf.Notebook.Include(x => x.Notes).ToList();
                 return Ok(notebooks);
             }
         }
 
         [HttpPost("/api/CreateNotebook")]
-        public async Task<IActionResult> CreateNotebook([FromBody] NotebookDTO notebookDTO)
+        public async Task<IActionResult> CreateNotebook([FromBody] NotebookDTO notebookDto)
         {
-
             try
             {
-                var createNotebook = await _notebooksService.CreateNotebook(notebookDTO);
+                var createNotebook = await _notebooksService.CreateNotebook(notebookDto);
                 return Ok(createNotebook);
             }
             catch (Exception ex)
@@ -61,28 +63,30 @@ namespace FirstWebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpDelete("/api/DeleteNotebook/{Id}")]
-        public ActionResult DeleteNotebook(int Id)
-        {
-            Notebook existingNotebook = _dataContextEF.Notebook.FirstOrDefault(x => x.Id == Id);
-            IEnumerable<Notebook> allNotebooks = _dataContextEF.Notebook.Where(x => x != null);
 
-            if (existingNotebook != null) // Deletes notebook by Id
+        [HttpDelete("/api/DeleteNotebook/{id}")]
+        public ActionResult DeleteNotebook(int id)
+        {
+            Notebook existingNotebook = _dataContextEf.Notebook.FirstOrDefault(x => x.Id == id);
+            IEnumerable<Notebook> allNotebooks = _dataContextEf.Notebook.Where(x => x != null);
+
+            if (existingNotebook != null) // Deletes notebook by id
             {
-                _dataContextEF.Notebook.Remove(existingNotebook);
-                _dataContextEF.SaveChanges();
-                return Ok($"Succesfully deleted Notebook \n Title : {existingNotebook.Title} \n Id : {existingNotebook.Id}");
+                _dataContextEf.Notebook.Remove(existingNotebook);
+                _dataContextEf.SaveChanges();
+                return Ok(
+                    $"Successfully deleted Notebook \n Title : {existingNotebook.Title} \n id : {existingNotebook.Id}");
             }
-            else if (Id == 0) // Deletes all notebooks if Id is 0
+            else if (id == 0) // Deletes all notebooks if id is 0
             {
                 int notebooksCount = allNotebooks.Count();
-                _dataContextEF.Notebook.RemoveRange(allNotebooks);
-                _dataContextEF.SaveChanges();
-                return Ok($"Sucessfully DELETED all : {notebooksCount} Notebooks!");
+                _dataContextEf.Notebook.RemoveRange(allNotebooks);
+                _dataContextEf.SaveChanges();
+                return Ok($"Successfully DELETED all : {notebooksCount} Notebooks!");
             }
             else
             {
-                return NotFound($"Notebook by Id : {Id} not found!");
+                return NotFound($"Notebook by id : {id} not found!");
             }
         }
     }
