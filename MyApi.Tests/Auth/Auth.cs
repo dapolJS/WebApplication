@@ -61,7 +61,6 @@ public class AuthenticationBearer
         catch (Exception)
         {
             Console.WriteLine(" ===> Email is already registered");
-            return;
         }
     }
 

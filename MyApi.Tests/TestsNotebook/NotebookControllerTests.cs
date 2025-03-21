@@ -43,7 +43,7 @@ namespace MyApi.Tests.NotebookTests
         {
             await _auth.AuthenticateAsync();
 
-            NotebookDTO notebookDTO = new NotebookDTO // New note object to be created
+            NotebookDTO notebookDto = new NotebookDTO // New note object to be created
             {
                 Title = "PostNotebook",
                 UniqueKey = "Test UniqueKey",
@@ -51,7 +51,7 @@ namespace MyApi.Tests.NotebookTests
             var response = await _client.PostAsync(
                 "/api/CreateNotebook",
                 new StringContent(
-                    JsonConvert.SerializeObject(notebookDTO),
+                    JsonConvert.SerializeObject(notebookDto),
                     Encoding.UTF8,
                     "application/json"
                 )
@@ -69,7 +69,7 @@ namespace MyApi.Tests.NotebookTests
             Assert.NotEmpty(content);
             Assert.NotNull(jsonContent.Title);
             Assert.NotNull(jsonContent.UniqueKey);
-            Assert.Equal(jsonContent.UniqueKey, notebookDTO.UniqueKey);
+            Assert.Equal(jsonContent.UniqueKey, notebookDto.UniqueKey);
         }
 
         [Fact(DisplayName = " =========== TC3 Create Notebook with empty title")]
@@ -77,7 +77,7 @@ namespace MyApi.Tests.NotebookTests
         {
             await _auth.AuthenticateAsync();
 
-            NotebookDTO notebookDTO = new NotebookDTO
+            NotebookDTO notebookDto = new NotebookDTO
             {
                 Title = "",
                 UniqueKey = "From PostNotes test, Title not existing"
@@ -85,7 +85,7 @@ namespace MyApi.Tests.NotebookTests
             var response = await _client.PostAsync(
                 "/api/CreateNotebook",
                 new StringContent(
-                    JsonConvert.SerializeObject(notebookDTO),
+                    JsonConvert.SerializeObject(notebookDto),
                     Encoding.UTF8,
                     "application/json"
                 )
@@ -96,7 +96,7 @@ namespace MyApi.Tests.NotebookTests
             // Assert
             Console.WriteLine(" ===> Response body : " + content);
             Assert.NotEmpty(content);
-            Assert.Equal("Please enter valid value in notebookDTO.Title!", content);
+            Assert.Equal("Please enter valid value in notebookDto.Title!", content);
         }
 
         [Fact(DisplayName = " =========== TC4 Create Notebook with empty UniqueKey")]
@@ -104,12 +104,12 @@ namespace MyApi.Tests.NotebookTests
         {
             await _auth.AuthenticateAsync();
 
-            NotebookDTO notebookDTO = new NotebookDTO { Title = "PostNotesTitle", UniqueKey = "" };
+            NotebookDTO notebookDto = new NotebookDTO { Title = "PostNotesTitle", UniqueKey = "" };
 
             var response = await _client.PostAsync(
                 "/api/CreateNotebook",
                 new StringContent(
-                    JsonConvert.SerializeObject(notebookDTO),
+                    JsonConvert.SerializeObject(notebookDto),
                     Encoding.UTF8,
                     "application/json"
                 )
@@ -126,10 +126,10 @@ namespace MyApi.Tests.NotebookTests
             Notebook jsonContent = JsonConvert.DeserializeObject<Notebook>(content);
             Assert.NotEmpty(content);
             Assert.Equal(jsonContent.Title, jsonContent.Title);
-            Assert.Equal(jsonContent.UniqueKey, notebookDTO.UniqueKey);
+            Assert.Equal(jsonContent.UniqueKey, notebookDto.UniqueKey);
         }
 
-        [Fact(DisplayName = " =========== TC5 Createbook with note")]
+        [Fact(DisplayName = " =========== TC5 Create book with note")]
         public async Task PostNotebookCreateNotebookWithExistingNote()
         {
             await _auth.AuthenticateAsync();
@@ -200,7 +200,7 @@ namespace MyApi.Tests.NotebookTests
 
             Console.WriteLine(" ===> DeleteNotebookById Response body : " + content);
             Assert.NotEmpty(content);
-            Assert.Contains("Succesfully deleted Notebook", content);
+            Assert.Contains("Successfully deleted Notebook", content);
         }
 
         [Fact(DisplayName = " =========== TC7 Delete none existing Notebook by Id")]
