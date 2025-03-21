@@ -19,7 +19,7 @@ namespace MyApi.Tests.NotesTests
             new AuthenticationBearer(_client).RegisterAsync().GetAwaiter().GetResult();
         }
 
-        [Fact(DisplayName = " =========== TC1 Returns list of exisitng notes")]
+        [Fact(DisplayName = " =========== TC1 Returns list of existing notes")]
         public async Task GetNotesReturnsListOfNotes()
         {
             await _auth.AuthenticateAsync();
@@ -42,7 +42,7 @@ namespace MyApi.Tests.NotesTests
         {
             await _auth.AuthenticateAsync();
 
-            NoteDTO noteDTO = new NoteDTO // New note object to be created
+            NoteDTO noteDto = new NoteDTO // New note object to be created
             {
                 Title = "PostNotes",
                 Description = "This is from Integration test",
@@ -51,7 +51,7 @@ namespace MyApi.Tests.NotesTests
             var response = await _client.PostAsync(
                 "/api/CreateNote",
                 new StringContent(
-                    JsonConvert.SerializeObject(noteDTO),
+                    JsonConvert.SerializeObject(noteDto),
                     Encoding.UTF8,
                     "application/json"
                 )
@@ -73,7 +73,7 @@ namespace MyApi.Tests.NotesTests
         {
             await _auth.AuthenticateAsync();
 
-            NoteDTO noteDTO = new NoteDTO
+            NoteDTO noteDto = new NoteDTO
             {
                 Title = "",
                 Description = "From PostNotes test, Title not existing"
@@ -81,7 +81,7 @@ namespace MyApi.Tests.NotesTests
             var response = await _client.PostAsync(
                 "/api/CreateNote",
                 new StringContent(
-                    JsonConvert.SerializeObject(noteDTO),
+                    JsonConvert.SerializeObject(noteDto),
                     Encoding.UTF8,
                     "application/json"
                 )
@@ -92,7 +92,7 @@ namespace MyApi.Tests.NotesTests
             // Assert
             Console.WriteLine(" ===> Response body : " + content);
             Assert.NotEmpty(content);
-            Assert.Equal("Please enter valid value in noteDTO.Title!", content);
+            Assert.Equal("Please enter valid value in noteDto.Title!", content);
         }
 
         [Fact(DisplayName = " =========== TC4 Create note with empty description")]
@@ -100,12 +100,12 @@ namespace MyApi.Tests.NotesTests
         {
             await _auth.AuthenticateAsync();
 
-            NoteDTO noteDTO = new NoteDTO { Title = "PostNotesTitle", Description = "" };
+            NoteDTO noteDto = new NoteDTO { Title = "PostNotesTitle", Description = "" };
 
             var response = await _client.PostAsync(
                 "/api/CreateNote",
                 new StringContent(
-                    JsonConvert.SerializeObject(noteDTO),
+                    JsonConvert.SerializeObject(noteDto),
                     Encoding.UTF8,
                     "application/json"
                 )
@@ -115,7 +115,7 @@ namespace MyApi.Tests.NotesTests
 
             Console.WriteLine(" ===> Response body : " + content);
             Assert.NotEmpty(content);
-            Assert.Equal("Please enter valid value in noteDTO.Description!", content);
+            Assert.Equal("Please enter valid value in noteDto.Description!", content);
         }
 
         [Fact(DisplayName = " =========== TC5 Create note with existing notebook")]
@@ -123,7 +123,7 @@ namespace MyApi.Tests.NotesTests
         {
             await _auth.AuthenticateAsync();
 
-            NoteDTO noteDTO = new NoteDTO
+            NoteDTO noteDto = new NoteDTO
             {
                 NotebookId = 2,
                 Title = "Test Title",
@@ -133,7 +133,7 @@ namespace MyApi.Tests.NotesTests
             var response = await _client.PostAsync(
                 "/api/CreateNote",
                 new StringContent(
-                    JsonConvert.SerializeObject(noteDTO),
+                    JsonConvert.SerializeObject(noteDto),
                     Encoding.UTF8,
                     "application/json"
                 )
@@ -146,9 +146,9 @@ namespace MyApi.Tests.NotesTests
                 " ===> PostNotesCreateNoteWithExistingNotebook Response body : " + content
             );
             Assert.NotEmpty(content);
-            Assert.Equal(noteDTO.NotebookId, jsonContent.NotebookId);
-            Assert.Equal(noteDTO.Title, jsonContent.Title);
-            Assert.Equal(noteDTO.Description, jsonContent.Description);
+            Assert.Equal(noteDto.NotebookId, jsonContent.NotebookId);
+            Assert.Equal(noteDto.Title, jsonContent.Title);
+            Assert.Equal(noteDto.Description, jsonContent.Description);
         }
 
         [Fact(DisplayName = " =========== TC6 Edit existing notes Title with same Title")]
@@ -158,12 +158,12 @@ namespace MyApi.Tests.NotesTests
 
             int noteId = 7;
 
-            Note noteDTO = new Note { Title = "SeedTitle", };
+            Note noteDto = new Note { Title = "SeedTitle", };
 
             var response = await _client.PutAsync(
                 $"/api/EditNote/{noteId}",
                 new StringContent(
-                    JsonConvert.SerializeObject(noteDTO),
+                    JsonConvert.SerializeObject(noteDto),
                     Encoding.UTF8,
                     "application/json"
                 )
@@ -187,12 +187,12 @@ namespace MyApi.Tests.NotesTests
             // Generate a random integer between 0 (inclusive) and 100000 (exclusive)
             int randomNumber = random.Next(0, 100000);
             int noteId = 6;
-            Note noteDTO = new Note { Title = $"Test Edit Title{randomNumber}", };
+            Note noteDto = new Note { Title = $"Test Edit Title{randomNumber}", };
 
             var response = await _client.PutAsync(
                 $"/api/EditNote/{noteId}",
                 new StringContent(
-                    JsonConvert.SerializeObject(noteDTO),
+                    JsonConvert.SerializeObject(noteDto),
                     Encoding.UTF8,
                     "application/json"
                 )
@@ -204,7 +204,7 @@ namespace MyApi.Tests.NotesTests
             Note jsonContent = JsonConvert.DeserializeObject<Note>(content);
 
             Assert.NotEmpty(content);
-            Assert.Equal(noteDTO.Title, jsonContent.Title);
+            Assert.Equal(noteDto.Title, jsonContent.Title);
         }
 
         [Fact(DisplayName = " =========== TC8 Edit existing notes Title with empty Title")]
@@ -213,12 +213,12 @@ namespace MyApi.Tests.NotesTests
             await _auth.AuthenticateAsync();
 
             int noteId = 6;
-            Note noteDTO = new Note { Title = "", };
+            Note noteDto = new Note { Title = "", };
 
             var response = await _client.PutAsync(
                 $"/api/EditNote/{noteId}",
                 new StringContent(
-                    JsonConvert.SerializeObject(noteDTO),
+                    JsonConvert.SerializeObject(noteDto),
                     Encoding.UTF8,
                     "application/json"
                 )
@@ -240,12 +240,12 @@ namespace MyApi.Tests.NotesTests
 
             int noteId = 7;
 
-            Note noteDTO = new Note { Description = "SeedDescription", };
+            Note noteDto = new Note { Description = "SeedDescription", };
 
             var response = await _client.PutAsync(
                 $"/api/EditNote/{noteId}",
                 new StringContent(
-                    JsonConvert.SerializeObject(noteDTO),
+                    JsonConvert.SerializeObject(noteDto),
                     Encoding.UTF8,
                     "application/json"
                 )
@@ -269,12 +269,12 @@ namespace MyApi.Tests.NotesTests
             // Generate a random integer between 0 (inclusive) and 100000 (exclusive)
             int randomNumber = random.Next(0, 100000);
             int noteId = 6;
-            Note noteDTO = new Note { Description = $"Test Edit Description{randomNumber}", };
+            Note noteDto = new Note { Description = $"Test Edit Description{randomNumber}", };
 
             var response = await _client.PutAsync(
                 $"/api/EditNote/{noteId}",
                 new StringContent(
-                    JsonConvert.SerializeObject(noteDTO),
+                    JsonConvert.SerializeObject(noteDto),
                     Encoding.UTF8,
                     "application/json"
                 )
@@ -286,7 +286,7 @@ namespace MyApi.Tests.NotesTests
             Note jsonContent = JsonConvert.DeserializeObject<Note>(content);
 
             Assert.NotEmpty(content);
-            Assert.Equal(noteDTO.Description, jsonContent.Description);
+            Assert.Equal(noteDto.Description, jsonContent.Description);
         }
 
         [Fact(
@@ -297,12 +297,12 @@ namespace MyApi.Tests.NotesTests
             await _auth.AuthenticateAsync();
 
             int noteId = 6;
-            Note noteDTO = new Note { Description = "", };
+            Note noteDto = new Note { Description = "", };
 
             var response = await _client.PutAsync(
                 $"/api/EditNote/{noteId}",
                 new StringContent(
-                    JsonConvert.SerializeObject(noteDTO),
+                    JsonConvert.SerializeObject(noteDto),
                     Encoding.UTF8,
                     "application/json"
                 )
@@ -320,7 +320,7 @@ namespace MyApi.Tests.NotesTests
         {
             await _auth.AuthenticateAsync();
 
-            NoteDTO noteDTOtoBeDeleted = new NoteDTO // New note object to be created
+            NoteDTO noteDtoBeDeleted = new NoteDTO // New note object to be created
             {
                 Title = "PostNotes",
                 Description = "This is from Integration test",
@@ -330,7 +330,7 @@ namespace MyApi.Tests.NotesTests
             var responseToBeDeletedNote = await _client.PostAsync(
                 "/api/CreateNote",
                 new StringContent(
-                    JsonConvert.SerializeObject(noteDTOtoBeDeleted),
+                    JsonConvert.SerializeObject(noteDtoBeDeleted),
                     Encoding.UTF8,
                     "application/json"
                 )
@@ -348,7 +348,7 @@ namespace MyApi.Tests.NotesTests
 
             Console.WriteLine(" ===> DeleteNoteById Response body : " + content);
             Assert.NotEmpty(content);
-            Assert.Contains("Succesfully deleted Note", content);
+            Assert.Contains("Successfully deleted Note", content);
         }
 
         [Fact(DisplayName = " =========== TC13 Delete none existing note by Id")]
