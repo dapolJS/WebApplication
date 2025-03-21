@@ -2,9 +2,9 @@
 
 public class Room
 {
-    public int Id { get; set; }
-    public string UniqueKey { get; set; }
-    public ICollection<Notebook> Notebooks { get; set; }
+    public int Id { get; init; }
+    public string UniqueKey { get; init; }
+    public ICollection<Notebook> Notebooks { get; init; }
 
     public Room()
     {
