@@ -216,7 +216,7 @@ namespace MyApi.Tests.NotebookTests
 
             Console.WriteLine(" ===> DeleteNoneExistingNotebookById Response body : " + content);
             Assert.NotEmpty(content);
-            Assert.Contains($"Notebook by Id : {notebookId} not found!", content);
+            Assert.Contains($"Notebook by id : {notebookId} not found!", content);
         }
     }
 }
