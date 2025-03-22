@@ -364,7 +364,7 @@ namespace MyApi.Tests.NotesTests
 
             Console.WriteLine(" ===> DeleteNoteById Response body : " + content);
             Assert.NotEmpty(content);
-            Assert.Contains($"Note by Id : {noteId} not found!", content);
+            Assert.Contains($"Note by id : {noteId} not found!", content);
         }
         // TODO: continue with edit note tests, delete note tests
     }
