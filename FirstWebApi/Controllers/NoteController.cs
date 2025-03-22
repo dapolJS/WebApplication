@@ -6,52 +6,52 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FirstWebApi.Controllers
 {
-    // [Authorize] //TODO: figure out how to use sql db instead of in memory
+    [Authorize]
     public class NoteController : ControllerBase
     {
         private readonly NotesService _notesService;
-        private readonly DataContextEF _dataContextEF;
+        private readonly DataContextEF _dataContextEf;
 
-        public NoteController(DataContextEF dataContextEF, NotesService notesService)
+        public NoteController(DataContextEF dataContextEf, NotesService notesService)
         {
             _notesService = notesService;
-            _dataContextEF = dataContextEF;
+            _dataContextEf = dataContextEf;
         }
 
-        [HttpGet("/api/GetNotes/{Id}/{Title}")]
-        public ActionResult<Note> GetNotes(int Id = 0, string Title = "None")
+        [HttpGet("/api/GetNotes/{id}/{title}")]
+        public ActionResult<Note> GetNotes(int id = 0, string title = "None")
         {
-            if (Id != 0)
+            if (id != 0)
             {
-                var note = _dataContextEF.Note.FirstOrDefault(x => x.Id == Id);
+                var note = _dataContextEf.Note.FirstOrDefault(x => x.Id == id);
                 if (note == null)
                 {
-                    return NotFound("Note by Id not found!");
+                    return NotFound("Note by id not found!");
                 }
                 return Ok(note);
             }
-            else if (Title != "None")
+            else if (title != "None")
             {
-                var note = _dataContextEF.Note.Where(x => x.Title.ToLower().Contains(Title.ToLower()));
+                var note = _dataContextEf.Note.Where(x => x.Title.ToLower().Contains(title.ToLower()));
                 if (!note.Any())
                 {
-                    return NotFound("Note by Title not found!");
+                    return NotFound("Note by title not found!");
                 }
                 return Ok(note);
             }
             else
             {
-                var notes = _dataContextEF.Note.ToList();
+                var notes = _dataContextEf.Note.ToList();
                 return Ok(notes);
             }
         }
 
         [HttpPost("/api/CreateNote")]
-        public ActionResult<Note> PostNotes([FromBody] NoteDTO noteDTO)
+        public ActionResult<Note> PostNotes([FromBody] NoteDTO noteDto)
         {
             try
             {
-                var createNote = _notesService.CreateNote(noteDTO);
+                var createNote = _notesService.CreateNote(noteDto);
                 return Ok(createNote);
             }
             catch (Exception ex)
@@ -59,12 +59,12 @@ namespace FirstWebApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut("/api/EditNote/{Id}")]
-        public async Task<ActionResult<Note>> PutNotes(int Id, [FromBody] NoteDTO noteDTO)
+        [HttpPut("/api/EditNote/{id}")]
+        public async Task<ActionResult<Note>> PutNotes(int id, [FromBody] NoteDTO noteDto)
         {
             try
             {
-                var updatedNote = await _notesService.UpdateNoteAsync(Id, noteDTO);
+                var updatedNote = await _notesService.UpdateNoteAsync(id, noteDto);
                 return Ok(updatedNote);
             }
             catch (Exception ex)
@@ -73,28 +73,28 @@ namespace FirstWebApi.Controllers
             }
         }
 
-        [HttpDelete("/api/DeleteNote/{Id}")] // Delete all notes if Id = 0 is not provided
-        public ActionResult DeleteNote(int Id)
+        [HttpDelete("/api/DeleteNote/{id}")] // Delete all notes if id = 0 is not provided
+        public ActionResult DeleteNote(int id)
         {
-            Note existingNote = _dataContextEF.Note.FirstOrDefault(n => n.Id == Id);
-            IEnumerable<Note> allNotes = _dataContextEF.Note.Where(x => x != null);
+            Note existingNote = _dataContextEf.Note.FirstOrDefault(n => n.Id == id);
+            IEnumerable<Note> allNotes = _dataContextEf.Note.Where(x => x != null);
 
-            if (existingNote != null) // Deletes note by Id
+            if (existingNote != null) // Deletes note by id
             {
-                _dataContextEF.Note.Remove(existingNote);
-                _dataContextEF.SaveChanges();
-                return Ok($"Succesfully deleted Note \n Title : {existingNote.Title} \n Id : {existingNote.Id}");
+                _dataContextEf.Note.Remove(existingNote);
+                _dataContextEf.SaveChanges();
+                return Ok($"Successfully deleted Note \n title : {existingNote.Title} \n id : {existingNote.Id}");
             }
-            else if (Id == 0) // Deletes all notes if Id is 0
+            else if (id == 0) // Deletes all notes if id is 0
             {
                 int notesCount = allNotes.Count();
-                _dataContextEF.Note.RemoveRange(allNotes);
-                _dataContextEF.SaveChanges();
-                return Ok($"Succesfully DELETED all : {notesCount} Notes!");
+                _dataContextEf.Note.RemoveRange(allNotes);
+                _dataContextEf.SaveChanges();
+                return Ok($"Successfully DELETED all : {notesCount} Notes!");
             }
             else
             {
-                return NotFound($"Note by Id : {Id} not found!");
+                return NotFound($"Note by id : {id} not found!");
             }
         }
     }

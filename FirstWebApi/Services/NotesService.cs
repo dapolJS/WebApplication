@@ -5,18 +5,18 @@ namespace FirstWebApi.Services
 {
     public class NotesService
     {
-        private readonly DataContextEF _dataContextEF;
+        private readonly DataContextEF _dataContextEf;
 
         public NotesService() { }
 
-        public NotesService(DataContextEF dataContextEF)
+        public NotesService(DataContextEF dataContextEf)
         {
-            _dataContextEF = dataContextEF;
+            _dataContextEf = dataContextEf;
         }
 
-        public async Task<Note> UpdateNoteAsync(int id, NoteDTO noteDTO)
+        public async Task<Note> UpdateNoteAsync(int id, NoteDTO noteDto)
         {
-            var note = await _dataContextEF.Note.FindAsync(id);
+            var note = await _dataContextEf.Note.FindAsync(id);
 
             if (note == null)
             {
@@ -25,11 +25,11 @@ namespace FirstWebApi.Services
 
             if (note != null)
             {
-                if (!string.IsNullOrWhiteSpace(noteDTO.Title)) //TODO: refactor to guard
+                if (!string.IsNullOrWhiteSpace(noteDto.Title)) //TODO: refactor to guard
                 {
-                    note.Title = noteDTO.Title;
+                    note.Title = noteDto.Title;
                 }
-                else if (string.IsNullOrEmpty(noteDTO.Title) && noteDTO.Title != "string")
+                else if (string.IsNullOrEmpty(noteDto.Title) && noteDto.Title != "string")
                 {
                     Console.WriteLine("Ignored empty title");
                 }
@@ -38,13 +38,13 @@ namespace FirstWebApi.Services
                     throw new ArgumentException("Please enter valid value in Title!");
                 }
                 if (
-                    !string.IsNullOrWhiteSpace(noteDTO.Description)
-                    && noteDTO.Description != "string"
+                    !string.IsNullOrWhiteSpace(noteDto.Description)
+                    && noteDto.Description != "string"
                 )
                 {
-                    note.Description = noteDTO.Description;
+                    note.Description = noteDto.Description;
                 }
-                else if (string.IsNullOrEmpty(noteDTO.Description))
+                else if (string.IsNullOrEmpty(noteDto.Description))
                 {
                     Console.WriteLine("Ignored empty description");
                 }
@@ -52,11 +52,11 @@ namespace FirstWebApi.Services
                 {
                     throw new ArgumentException("Please enter valid value in Description!");
                 }
-                if (noteDTO.NotebookId != 0)
+                if (noteDto.NotebookId != 0)
                 {
-                    note.NotebookId = noteDTO.NotebookId;
+                    note.NotebookId = noteDto.NotebookId;
                 }
-                else if (noteDTO.NotebookId == 0)
+                else if (noteDto.NotebookId == 0)
                 {
                     Console.WriteLine("Ignored empty title");
                 }
@@ -64,11 +64,11 @@ namespace FirstWebApi.Services
                 {
                     throw new ArgumentException("Please enter valid value in NotebookId!");
                 }
-                if (noteDTO.Done != null)
+                if (noteDto.Done != null)
                 {
-                    note.Done = noteDTO.Done;
+                    note.Done = noteDto.Done;
                 }
-                if (_dataContextEF.SaveChanges() > 0)
+                if (_dataContextEf.SaveChanges() > 0)
                 {
                     return note;
                 }
@@ -83,22 +83,22 @@ namespace FirstWebApi.Services
             }
         }
 
-        public Note CreateNote(NoteDTO noteDTO)
+        public Note CreateNote(NoteDTO noteDto)
         {
-            Guard.IsNotNullOrString(noteDTO.Title);
-            Guard.IsNotNullOrString(noteDTO.Description);
+            Guard.IsNotNullOrString(noteDto.Title);
+            Guard.IsNotNullOrString(noteDto.Description);
 
             Note note = new Note
             {
-                NotebookId = noteDTO.NotebookId,
-                Title = noteDTO.Title,
-                Description = noteDTO.Description,
-                Done = noteDTO.Done,
+                NotebookId = noteDto.NotebookId,
+                Title = noteDto.Title,
+                Description = noteDto.Description,
+                Done = noteDto.Done,
             };
 
-            _dataContextEF.Note.AddAsync(note);
+            _dataContextEf.Note.AddAsync(note);
 
-            if (_dataContextEF.SaveChanges() > 0)
+            if (_dataContextEf.SaveChanges() > 0)
             {
                 return note;
             }

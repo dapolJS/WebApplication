@@ -5,7 +5,7 @@ namespace FirstWebApi.DTOs
 {
     public class NotebookDTO
     {
-        public string Title { get; set; } = "";
-        public string UniqueKey { get; set; }
+        public string Title { get; init; } = "";
+        public string UniqueKey { get; init; }
     }
 }

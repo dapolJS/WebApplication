@@ -5,26 +5,26 @@ namespace FirstWebApi.Services;
 
 public class NotebooksService
 {
-    private readonly DataContextEF _dataContextEF;
+    private readonly DataContextEF _dataContextEf;
 
-    public NotebooksService(DataContextEF dataContextEF)
+    public NotebooksService(DataContextEF dataContextEf)
     {
-        _dataContextEF = dataContextEF;
+        _dataContextEf = dataContextEf;
     }
 
-    public async Task<Notebook> CreateNotebook(NotebookDTO notebookDTO)
+    public async Task<Notebook> CreateNotebook(NotebookDTO notebookDto)
     {
-        Guard.IsNotNull(notebookDTO.Title);
+        Guard.IsNotNull(notebookDto.Title);
 
         Notebook notebook = new Notebook
         {
-            Title = notebookDTO.Title,
-            UniqueKey = notebookDTO.UniqueKey
+            Title = notebookDto.Title,
+            UniqueKey = notebookDto.UniqueKey
         };
 
-        await _dataContextEF.Notebook.AddAsync(notebook);
+        await _dataContextEf.Notebook.AddAsync(notebook);
 
-        if (_dataContextEF.SaveChanges() > 0)
+        if (_dataContextEf.SaveChanges() > 0)
         {
             return notebook;
         }
