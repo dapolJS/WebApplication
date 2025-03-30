@@ -10,7 +10,9 @@ public class DataContextEF(DbContextOptions<DataContextEF> options) : DbContext(
 
     // Parameterless constructor (for testing or DI purposes)
     public DataContextEF()
-        : this(new DbContextOptions<DataContextEF>()) { }
+        : this(new DbContextOptions<DataContextEF>())
+    {
+    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
@@ -26,6 +28,10 @@ public class DataContextEF(DbContextOptions<DataContextEF> options) : DbContext(
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("NotesAppSchema");
+
+        modelBuilder.Entity<Note>()
+            .Property(n => n.Date)
+            .HasDefaultValueSql("GETUTCDATE()");
 
         modelBuilder
             .Entity<Note>()
