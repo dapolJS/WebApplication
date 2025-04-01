@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace FirstWebApi.Migrations
+namespace FirstWebApi.Migrations.IdentityDb
 {
     /// <inheritdoc />
-    public partial class testdb2 : Migration
+    public partial class InitNewColumn : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

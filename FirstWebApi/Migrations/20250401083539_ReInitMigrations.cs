@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace FirstWebApi.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateDBFirstTime : Migration // fix sql and application connection try to create note youll see
+    public partial class ReInitMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,11 +21,12 @@ namespace FirstWebApi.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UniqueKey = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    UniqueKey = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Room", x => x.Id);
+                    table.UniqueConstraint("AK_Room_UniqueKey", x => x.UniqueKey);
                 });
 
             migrationBuilder.CreateTable(
@@ -36,18 +38,17 @@ namespace FirstWebApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UniqueKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RoomId = table.Column<int>(type: "int", nullable: false)
+                    RoomUniqueKey = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Notebook", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Notebook_Room_RoomId",
-                        column: x => x.RoomId,
+                        name: "FK_Notebook_Room_RoomUniqueKey",
+                        column: x => x.RoomUniqueKey,
                         principalSchema: "NotesAppSchema",
                         principalTable: "Room",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UniqueKey");
                 });
 
             migrationBuilder.CreateTable(
@@ -60,7 +61,8 @@ namespace FirstWebApi.Migrations
                     NotebookId = table.Column<int>(type: "int", nullable: true),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Done = table.Column<bool>(type: "bit", nullable: true)
+                    Done = table.Column<bool>(type: "bit", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETUTCDATE()")
                 },
                 constraints: table =>
                 {
@@ -70,7 +72,8 @@ namespace FirstWebApi.Migrations
                         column: x => x.NotebookId,
                         principalSchema: "NotesAppSchema",
                         principalTable: "Notebook",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(
@@ -80,10 +83,10 @@ namespace FirstWebApi.Migrations
                 column: "NotebookId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Notebook_RoomId",
+                name: "IX_Notebook_RoomUniqueKey",
                 schema: "NotesAppSchema",
                 table: "Notebook",
-                column: "RoomId");
+                column: "RoomUniqueKey");
         }
 
         /// <inheritdoc />

@@ -9,6 +9,7 @@ public class Note
     public string Title { get; set; } = "";
     public string Description { get; set; } = "";
     public bool? Done { get; set; }
+    public DateTime? Date { get; init; }
 
     [JsonIgnore]
     public Notebook? Notebook { get; init; } // Navigation property
