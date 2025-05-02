@@ -12,7 +12,7 @@
         "http": {
             "commandName": "Project",
             "dotnetRunMessages": true,
-            "launchBrowser": true,
+            "launchBrowser": false,
             "launchUrl": "swagger",
             "applicationUrl": "http://localhost:5230",
             "environmentVariables": {
@@ -22,7 +22,7 @@
         "https": {
             "commandName": "Project",
             "dotnetRunMessages": true,
-            "launchBrowser": true,
+            "launchBrowser": false,
             "launchUrl": "swagger",
             "applicationUrl": "https://localhost:7164;http://localhost:5230",
             "environmentVariables": {
@@ -31,7 +31,7 @@
         },
         "IIS Express": {
             "commandName": "IISExpress",
-            "launchBrowser": true,
+            "launchBrowser": false,
             "launchUrl": "swagger",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
@@ -40,7 +40,7 @@
         "TestFirstWebApiNotes": {
             "commandName": "Project",
             "dotnetRunMessages": true,
-            "launchBrowser": true,
+            "launchBrowser": false,
             "launchUrl": "swagger",
             "applicationUrl": "https://localhost:1994;http://localhost:2024",
             "environmentVariables": {

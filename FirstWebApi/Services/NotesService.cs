@@ -7,7 +7,9 @@ namespace FirstWebApi.Services
     {
         private readonly DataContextEF _dataContextEf;
 
-        public NotesService() { }
+        public NotesService()
+        {
+        }
 
         public NotesService(DataContextEF dataContextEf)
         {
@@ -25,87 +27,50 @@ namespace FirstWebApi.Services
 
             if (note != null)
             {
-                if (!string.IsNullOrWhiteSpace(noteDto.Title)) //TODO: refactor to guard
+                if (!string.IsNullOrWhiteSpace(noteDto.Content)) //TODO: refactor to guard
                 {
-                    note.Title = noteDto.Title;
+                    note.Content = noteDto.Content;
                 }
-                else if (string.IsNullOrEmpty(noteDto.Title) && noteDto.Title != "string")
+                else if (string.IsNullOrEmpty(noteDto.Content) && noteDto.Content != "string")
                 {
-                    Console.WriteLine("Ignored empty title");
-                }
-                else
-                {
-                    throw new ArgumentException("Please enter valid value in Title!");
-                }
-                if (
-                    !string.IsNullOrWhiteSpace(noteDto.Description)
-                    && noteDto.Description != "string"
-                )
-                {
-                    note.Description = noteDto.Description;
-                }
-                else if (string.IsNullOrEmpty(noteDto.Description))
-                {
-                    Console.WriteLine("Ignored empty description");
+                    Console.WriteLine("Ignored empty Content");
                 }
                 else
                 {
-                    throw new ArgumentException("Please enter valid value in Description!");
+                    throw new ArgumentException("Please enter text in Content!");
                 }
-                if (noteDto.NotebookId != 0)
-                {
-                    note.NotebookId = noteDto.NotebookId;
-                }
-                else if (noteDto.NotebookId == 0)
-                {
-                    Console.WriteLine("Ignored empty title");
-                }
-                else
-                {
-                    throw new ArgumentException("Please enter valid value in NotebookId!");
-                }
+
                 if (noteDto.Done != null)
                 {
                     note.Done = noteDto.Done;
                 }
+
                 if (_dataContextEf.SaveChanges() > 0)
                 {
                     return note;
                 }
-                else
-                {
-                    throw new ArgumentException("There were no changes!");
-                }
+
+                throw new ArgumentException("There were no changes!");
             }
-            else
-            {
-                throw new ArgumentException("Note with this Id not found");
-            }
+
+            throw new ArgumentException("Note with this Id not found");
         }
 
-        public Note CreateNote(NoteDTO noteDto)
+        public async Task<Note> CreateNote(NoteDTO noteDto)
         {
-            Guard.IsNotNullOrString(noteDto.Title);
-            Guard.IsNotNullOrString(noteDto.Description);
-
-            Note note = new Note
+            var note = new Note
             {
-                NotebookId = noteDto.NotebookId,
-                Title = noteDto.Title,
-                Description = noteDto.Description,
+                Content = noteDto.Content,
                 Done = noteDto.Done,
             };
 
-            _dataContextEf.Note.AddAsync(note);
+            await _dataContextEf.Note.AddAsync(note);
 
-            if (_dataContextEf.SaveChanges() > 0)
+            if (await _dataContextEf.SaveChangesAsync() > 0)
             {
                 return note;
             }
-            else
-            {
-                throw new ArgumentException("There were no changes!");
-            }
+            throw new ArgumentException("There were no changes!");
         }
     }
 }
