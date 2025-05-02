@@ -2,9 +2,7 @@
 {
     public class NoteDTO
     {
-        public int? NotebookId { get; init; }
-        public string Title { get; init; } = "";
-        public string Description { get; init; } = "";
-        public bool? Done { get; init; }
+        public required string Content { get; init; } = "";
+        public required bool Done { get; init; }
     }
 }

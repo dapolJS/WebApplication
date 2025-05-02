@@ -5,10 +5,7 @@ namespace FirstWebApi.Models;
 public class DataContextEF(DbContextOptions<DataContextEF> options) : DbContext(options)
 {
     public DbSet<Note> Note { get; set; }
-    public DbSet<Room> Room { get; set; }
-    public DbSet<Notebook> Notebook { get; set; }
 
-    // Parameterless constructor (for testing or DI purposes)
     public DataContextEF()
         : this(new DbContextOptions<DataContextEF>())
     {
@@ -32,18 +29,6 @@ public class DataContextEF(DbContextOptions<DataContextEF> options) : DbContext(
         modelBuilder.Entity<Note>()
             .Property(n => n.Date)
             .HasDefaultValueSql("GETUTCDATE()");
-
-        modelBuilder
-            .Entity<Note>()
-            .HasOne(n => n.Notebook)
-            .WithMany(e => e.Notes)
-            .HasForeignKey(e => e.NotebookId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder
-            .Entity<Notebook>()
-            .HasOne(e => e.Room)
-            .WithMany(e => e.Notebooks)
-            .HasPrincipalKey(e => e.UniqueKey);
+        
     }
 }
