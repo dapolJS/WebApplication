@@ -61,6 +61,8 @@ namespace FirstWebApi.Services
             var note = new Note
             {
                 Content = noteDto.Content,
+                Purpose = "To do",
+                Owner = "Dani",
                 Done = noteDto.Done,
             };
 
