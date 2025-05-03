@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Switch to GithubFirstWebApiNotes for GitHub testing, DefaultConnection for Mac and LocalWindowsConnection for Windows
 var connectionString = builder.Configuration.GetConnectionString("GithubFirstWebApiNotes"); 
 
+
 builder.Services.AddControllers();
 
 // builder.Services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase(databaseName: "NotesList")); // When you dont want to setup database use this .net in memory functionality
