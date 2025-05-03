@@ -7,8 +7,8 @@ using SwaggerThemes;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-var connectionString = builder.Configuration.GetConnectionString("LocalWindowsConnection"); //Switch to GithubFirstWebApiNotes for Github testing, DefaultConnection for local testing
+// Switch to GithubFirstWebApiNotes for GitHub testing, DefaultConnection for Mac and LocalWindowsConnection for Windows
+var connectionString = builder.Configuration.GetConnectionString("LocalWindowsConnection"); 
 
 builder.Services.AddControllers();
 
